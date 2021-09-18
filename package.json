@@ -1,0 +1,34 @@
+{
+  "name": "labecastore",
+  "version": "0.0.1",
+  "description": "Loja Online de artigos esportivos",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode=development --watch",
+    "build": "webpack --mode=production",
+    "none": "webpack --mode=none",
+    "sass_dev": "sass --watch assets/style/sass/:assets/style/",
+    "sass_build": "sass assets/style/sass/:assets/style/ --style=compressed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasfelipeluz/labecastore.git"
+  },
+  "author": "Lucas Luz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasfelipeluz/labecastore/issues"
+  },
+  "homepage": "https://github.com/lucasfelipeluz/labecastore#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.5",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.15.6",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "webpack": "^5.53.0",
+    "webpack-cli": "^4.8.0"
+  }
+}
