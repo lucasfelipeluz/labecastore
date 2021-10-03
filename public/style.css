@@ -1,0 +1,62 @@
+@charset "UTF-8";
+/* font-family: 'IBM Plex Sans Thai Looped', sans-serif;  font-family: 'Recursive', sans-serif; */
+/* $font1:'Roboto', sans-serif; */
+/* Testes */
+/* Margin padrão */
+/* Mixins */
+/* SCROOL BAR */
+::-webkit-scrollbar-track {
+  background-color: #ecf0f1;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9b59b6;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "IBM Plex Sans Thai Looped", sans-serif;
+}
+
+body {
+  height: 4000px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Recursive", sans-serif;
+}
+
+p {
+  font-family: "IBM Plex Sans Thai Looped", sans-serif;
+}
+
+header {
+  height: 60px;
+  background-color: #34495E;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+header .logo {
+  height: 100%;
+  width: 250px;
+  /* border: $bd; */
+  display: flex;
+  align-items: center;
+}
+header .burger-nav {
+  background-color: red;
+  height: 50px;
+  width: 50px;
+}
+header .burger-nav .burger-nav {
+  background-color: #ecf0f1;
+  height: 2px;
+}
+
+/*# sourceMappingURL=style.css.map */

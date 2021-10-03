@@ -1,0 +1,23 @@
+header{
+  height: 60px;
+  background-color: $cor2;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  .logo{
+    height: 100%;
+    width: 250px;
+    /* border: $bd; */
+    display: flex;
+    align-items: center;
+  }
+  .burger-nav{
+    background-color: red;
+    height: 50px;
+    width: 50px;
+    .burger-nav{
+      background-color: $cor1;
+      height: 2px;
+
+    }
+  }
+}
