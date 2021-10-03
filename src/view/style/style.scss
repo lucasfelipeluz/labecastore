@@ -7,18 +7,18 @@ $false:#e74c3c;
 
 $corFonte1:#222f3e;  
 $corFonte2:#576574;
-/* font-family: 'IBM Plex Sans Thai Looped', sans-serif;  font-family: 'Recursive', sans-serif; */
 
-/* $font1:'Roboto', sans-serif; */
+/* Fontes */
 $font1:'IBM Plex Sans Thai Looped', sans-serif;;
 $font2:'Recursive', sans-serif;
 
-    /* Testes */
+/* Testes */
 $bd: 1px solid white;
 $bb: 1px solid black;
 
-    /* Margin padrão */
-$margin: 0 50px 0 50px;
+/* Margin padrão */
+$marginm: 0 15px 0 15px;
+$margind: 0 50px 0 50px;
 
 
 
@@ -87,6 +87,27 @@ h1, h2,h3,h4,h5,h6{
 }
 p{
   font-family: $font1;
+}
+
+textarea, input, select, button {
+  box-shadow: 0 0 0 0;
+  border: 0 none;
+  outline: 0;
+} 
+
+textarea:focus, input:focus, select:focus, button:focus {
+  box-shadow: 0 0 0 0;
+  border: 0 none;
+  outline: 0;
+} 
+input[type=number]::-webkit-inner-spin-button { 
+  -webkit-appearance: none;
+  
+}
+input[type=number] { 
+ -moz-appearance: textfield;
+ appearance: textfield;
+
 }
 
 @import 'header';
