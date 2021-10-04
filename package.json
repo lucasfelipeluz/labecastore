@@ -7,8 +7,8 @@
     "dev": "webpack --mode=development --watch",
     "build": "webpack --mode=production",
     "none": "webpack --mode=none",
-    "sass_dev": "sass --watch src/view/style:public/",
-    "sass_build": "sass src/view/style:public/ --style=compressed"
+    "sass_dev": "sass --watch src/view/style/sass:src/view/style/",
+    "sass_build": "sass src/view/style/sass:src/view/style/ --style=compressed"
   },
   "repository": {
     "type": "git",
