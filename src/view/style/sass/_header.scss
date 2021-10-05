@@ -53,9 +53,17 @@ header{
         width: 90%;
         font-size: 18px;
         padding-left: 8px;
-        
+        transition: 0.3s;
+                
+        /* &:focus{
+          background-color: rgb(207, 201, 201);
+          
+        } */
+        &:focus::placeholder{
+          color: white;
+        }
         &::placeholder{
-          color: black;
+          color: $corFonte1;
           font-weight: 400;
         }
       }
@@ -64,6 +72,7 @@ header{
         box-shadow: none;
         height: 40px;
         width: 40px;
+
 
         .fas{
           color: $cor1;

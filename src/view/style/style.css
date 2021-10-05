@@ -106,9 +106,17 @@ header .barra-pesquisa form input {
   width: 90%;
   font-size: 18px;
   padding-left: 8px;
+  transition: 0.3s;
+  /* &:focus{
+    background-color: rgb(207, 201, 201);
+
+  } */
+}
+header .barra-pesquisa form input:focus::placeholder {
+  color: white;
 }
 header .barra-pesquisa form input::placeholder {
-  color: black;
+  color: #222f3e;
   font-weight: 400;
 }
 header .barra-pesquisa form button {
