@@ -1,23 +1,23 @@
 $cor1: #ecf0f1;
 $cor2: #34495E;
-$cor3:#9b59b6;
+$cor3:#2ecc71;
 
 $true:#2ecc71;
+$true-hover: #27b863;
 $false:#e74c3c;
 
 $corFonte1:#222f3e;  
 $corFonte2:#576574;
 
 /* Fontes */
-$font1:'IBM Plex Sans Thai Looped', sans-serif;;
-$font2:'Recursive', sans-serif;
+$font1:'IBM Plex Sans', sans-serif;
 
 /* Testes */
 $bd: 1px solid white;
 $bb: 1px solid black;
 
 /* Margin padrão */
-$marginm: 0 15px 0 15px;
+$marginm: 0 10px 0 10px;
 $margind: 0 50px 0 50px;
 
 
@@ -78,12 +78,8 @@ $margind: 0 50px 0 50px;
   font-family: $font1;
 }
 
-body{
-  height: 4000px;
-}
-
 h1, h2,h3,h4,h5,h6{
-  font-family: $font2;
+  font-family: $font1;
 }
 p{
   font-family: $font1;
@@ -111,3 +107,5 @@ input[type=number] {
 }
 
 @import 'header';
+@import 'all';
+@import 'footer';
