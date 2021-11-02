@@ -19,7 +19,10 @@ function Admin() {
 }
 
 app.get('/', (req, res) => {
-  res.render('index');
+  const nameOfPage = null;
+  res.render('index', {
+    pageName: nameOfPage,
+  });
 });
 
 app.listen(80, (erro) => {
