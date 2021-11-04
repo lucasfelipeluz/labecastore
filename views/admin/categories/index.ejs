@@ -1,0 +1,39 @@
+<%- include('../admin_components/header') %> 
+<body>
+  <%- include('../admin_components/navbar') %> 
+
+  <div class="container">
+    <h2>Categorias</h2>
+    <a href="/admin/categories/new" class="btn btn-success">Criar nova categoria</a>
+    <hr>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Slug</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>
+            <form action="/admin/categories/edit/ " style="display: inline;">
+              <button class="btn btn-warning">Editar</button>
+            </form>
+            <form action="/categories/delete" method="post"  style="display: inline;" onsubmit="confirmarDelecao(event, this)">
+              <input type="hidden" name="id" value="">
+              <button class="btn btn-danger">Deletar</button>
+            </form>
+          </th>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</body>
+<%- include('../admin_components/footer') %> 
