@@ -16,5 +16,6 @@
         "no-shadow":"off",
         "arrow-parens":"off",
         "no-console":"off"
+        
     }
 }
