@@ -5,6 +5,10 @@ const admCategories = require('./admin/categories/controllerCategories');
 
 const app = express();
 
+/* Body Parser */
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 /* View Engine and static files configuration */
 app.set('view engine', 'ejs');
 app.use(express.static('src'));
