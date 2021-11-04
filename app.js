@@ -1,7 +1,7 @@
 const express = require('express');
 const connection = require('./databases/connection');
-const admProducts = require('./admin/products/products');
-const admCategories = require('./admin/categories/categories');
+const admProducts = require('./admin/products/controllerProducts');
+const admCategories = require('./admin/categories/controllerCategories');
 
 const app = express();
 
