@@ -11,29 +11,40 @@
         <tr>
           <th>ID</th>
           <th>Título</th>
-          <th>Slug</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
+        <% category.forEach(item => { %>
+          <tr>
+            <td><%=item.id %></td>
+            <td><%=item.title %></td>
+            <td>
+              <form action="/admin/categories/edit/<%=item.id%>" method="get" style="display: inline;">
+                <button class="btn btn-warning">Editar</button>
+              </form>
+              <form action="/admin/categories/delete" method="post"  style="display: inline;" onsubmit="utilities.confirmDeletion(event, this)" >
+                <input type="hidden" name="id" value="<%=item.id%>">
+                <button class="btn btn-danger">Deletar</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %> 
         
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th>
-            <form action="/admin/categories/edit/ " style="display: inline;">
-              <button class="btn btn-warning">Editar</button>
-            </form>
-            <form action="/categories/delete" method="post"  style="display: inline;" onsubmit="confirmarDelecao(event, this)">
-              <input type="hidden" name="id" value="">
-              <button class="btn btn-danger">Deletar</button>
-            </form>
-          </th>
-        </tr>
+        
         
       </tbody>
     </table>
   </div>
 </body>
 <%- include('../admin_components/footer') %> 
+<script>
+  function confirmarDelecao(event, form){
+    event.preventDefault();
+    const decision = confirm('Confirmar exclusão?');
+    if (decision) form.submit();
+  }
+</script>
+
+
+<!--  -->
