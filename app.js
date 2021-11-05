@@ -14,13 +14,16 @@ app.set('view engine', 'ejs');
 app.use(express.static('src'));
 
 /* Connection of databases */
-connection
-  .authenticate()
-  .then()
-  .catch(msgErro => console.log(msgErro));
+connection.authenticate().then().catch(msgErro => console.log(msgErro));
 
 /* Models admin */
 function Admin() {
+  app.get('/admin', (req, res) => {
+    const nameOfPage = 'Administração La Beca';
+    res.render('admin/index', {
+      pageName: nameOfPage,
+    });
+  });
   app.use('/admin', admProducts);
   app.use('/admin', admCategories);
 }
