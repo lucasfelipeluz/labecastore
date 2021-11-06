@@ -2,6 +2,7 @@ const express = require('express');
 const connection = require('./databases/connection');
 const admProducts = require('./admin/products/controllerProducts');
 const admCategories = require('./admin/categories/controllerCategories');
+const admMaterial = require('./admin/materialtype/controllersMaterialType');
 
 const app = express();
 
@@ -26,6 +27,7 @@ function Admin() {
   });
   app.use('/admin', admProducts);
   app.use('/admin', admCategories);
+  app.use('/admin', admMaterial);
 }
 
 /* Homepage */

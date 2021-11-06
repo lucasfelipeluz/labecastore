@@ -23,7 +23,7 @@ const Products = connection.define('products', {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  inventoryTotal: {
+  inventoryEG: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
