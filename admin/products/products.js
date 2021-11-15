@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const connection = require('../../databases/connection');
 const Categories = require('../categories/categories');
+const materialType = require('../materialtype/materialType');
 
 const Products = connection.define('products', {
   title: {
@@ -28,3 +29,10 @@ const Products = connection.define('products', {
     allowNull: false,
   },
 });
+
+Categories.hasMany(Products);
+Products.belongsTo(Categories);
+materialType.hasMany(Products);
+Products.belongsTo(materialType);
+
+module.exports = Products;
