@@ -28,6 +28,10 @@ const Products = connection.define('products', {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
+  imgAddress: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
 });
 
 Categories.hasMany(Products);
