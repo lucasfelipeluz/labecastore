@@ -6,8 +6,8 @@ class Admin {
         pageName,
       },
       links: {
-        category: '/category',
-        product: '/product',
+        category: '/categories',
+        product: '/products',
       },
     });
   }
