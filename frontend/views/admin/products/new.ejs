@@ -1,0 +1,52 @@
+<%- include('../admin_components/header') %> 
+<body>
+  <%- include('../admin_components/navbar') %> 
+
+  <div class="container">
+    <div class="card mt-3">
+      <div class="card-header">
+        <h2>Cadastro de Materiais</h2>
+      </div>
+      <div class="card-body">
+        <form action="" method="post">
+          <h5>Nome e Preço</h5>
+          <div class="row mb-2">
+            <!-- <label for="title" class="">Nome</label> -->
+            <input class="form-control col-8 m-auto" type="text" name="title" placeholder="Barcelona I 19/20">
+            <input class="form-control col-2 m-auto" type="text" name="price" placeholder="149.78">
+          </div>
+          <h5>Estoque</h5>
+          <div class="row mb-2">
+            <input class="form-control col-2 m-auto" type="number" name="inventoryP" placeholder="P">
+            <input class="form-control col-2 m-auto" type="number" name="inventoryM" placeholder="M">
+            <input class="form-control col-2 m-auto" type="number" name="inventoryG" placeholder="G">
+            <input class="form-control col-2 m-auto" type="number" name="inventoryEG" placeholder="EG">
+          </div>
+          <h5>Categoria e Material</h5>
+          <div class="row mb-2">
+            <select name="category" class="form-control col-5 m-auto">
+
+              <% categories.forEach(category => {%>
+                <option value="<%=category.id%>"><%=category.title%></option>
+              <%}) %>
+             
+            </select>
+
+            <select name="material" class="form-control col-5 m-auto">
+
+              <% materials.forEach(material => {%>
+                <option value="<%=material.id%>"><%=material.title%></option>
+              <%}) %>
+             
+            </select>
+
+          </div>
+          <!-- <button class="btn btn-success mt-3">Cadastrar</button> -->
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+  <%- include('../admin_components/footer') %> 

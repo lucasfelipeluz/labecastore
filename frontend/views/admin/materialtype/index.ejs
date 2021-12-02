@@ -1,0 +1,41 @@
+<%- include('../admin_components/header') %> 
+<body>
+  <%- include('../admin_components/navbar') %> 
+
+  <div class="container">
+    <h2>Materiais</h2>
+    <a href="/admin/material/new" class="btn btn-success">Criar Novo Tipo de Material</a>
+    <hr>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% materials.forEach(material => { %>
+
+        <tr>
+          <td><%= material.id %></td>
+          <td><%= material.title %></td>
+          <td>
+            <form action="/admin/material/edit/<%=material.id%>" style="display: inline;">
+              <button class="btn btn-warning">Editar</button>
+            </form>
+            <form action="/admin/material/delete" method="post"  style="display: inline;" onsubmit="utilities.confirmDeletion(event, this)">
+              <input type="hidden" name="id" value="<%=material.id%>">
+              <button class="btn btn-danger">Deletar</button>
+            </form>
+          </th>
+        </td>
+
+        <% }) %> 
+      </tbody>
+    </table>
+  </div>
+
+
+</body>
+  <%- include('../admin_components/footer') %> 
