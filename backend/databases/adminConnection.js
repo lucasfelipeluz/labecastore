@@ -1,4 +1,4 @@
-const connection = require('knex')({
+const adminConnection = require('knex')({
   client: 'mysql2',
   connection: {
     host: '127.0.0.1',
@@ -8,4 +8,4 @@ const connection = require('knex')({
   },
 });
 
-module.exports = connection;
+module.exports = adminConnection;
