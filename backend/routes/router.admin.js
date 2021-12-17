@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/', AdminController.index);
 router.post('/login', AdminController.login)
-router.post('/signup', AdminController.new)
+router.post('/signup', AdminController.newUser)
 
 /* Products */
 router.get('/products', ProductsController.index);

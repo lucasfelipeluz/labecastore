@@ -34,7 +34,7 @@ class Admin {
 
   }
 
-  async new(req, res) {
+  async newUser(req, res) {
     const { nickname, name, password } = req.body;
     const response = await User.findByNickname(nickname);
 
