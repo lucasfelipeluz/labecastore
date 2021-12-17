@@ -1,9 +1,9 @@
-const database = require('../databases/connection');
+const adminConnection = require('../databases/adminConnection');
 
 class Products {
   async findAll() {
     try {
-      const result = await database.select(['id', 'title', 'price', 'inventory'])
+      const result = await adminConnection.select(['id', 'title', 'price', 'inventory'])
         .table('products');
       return result;
     } catch (error) {
@@ -14,7 +14,7 @@ class Products {
 
   async insertData({ title, price, inventory }) {
     try {
-      await database.insert({ title, price, inventory: JSON.stringify(inventory) }).into('products');
+      await adminConnection.insert({ title, price, inventory: JSON.stringify(inventory) }).into('products');
       return true;
     } catch (error) {
       console.log(error);
@@ -24,7 +24,7 @@ class Products {
 
   async updateData(id, { title, price, inventory }) {
     try {
-      const response = await database.where({ id })
+      const response = await adminConnection.where({ id })
         .update({ title, price, inventory: JSON.stringify(inventory) })
         .table('products');
 
@@ -47,7 +47,7 @@ class Products {
 
   async deleteData(id) {
     try {
-      const response = await database.where({ id }).delete().table('products');
+      const response = await adminConnection.where({ id }).delete().table('products');
       if (response === 0) {
         return {
           status: 404,

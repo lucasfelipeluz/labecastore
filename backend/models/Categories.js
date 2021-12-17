@@ -1,9 +1,9 @@
-const database = require('../databases/connection');
+const adminConnection = require('../databases/adminConnection');
 
 class Categories {
   async findAll() {
     try {
-      const result = await database.select(['id', 'title']).table('categories');
+      const result = await adminConnection.select(['id', 'title']).table('categories');
       return result;
     } catch (error) {
       console.log(error);
@@ -13,7 +13,7 @@ class Categories {
 
   async insertData({ title, slug }) {
     try {
-      await database.insert({ title, slug }).into('categories');
+      await adminConnection.insert({ title, slug }).into('categories');
       return true;
     } catch (error) {
       console.log(error);
@@ -23,7 +23,7 @@ class Categories {
 
   async updateData(id, { title, slug }) {
     try {
-      const response = await database.where({ id }).update({ title, slug }).table('categories');
+      const response = await adminConnection.where({ id }).update({ title, slug }).table('categories');
 
       if (response === 0) {
         return {
@@ -44,7 +44,7 @@ class Categories {
 
   async deleteData(id) {
     try {
-      const response = await database.where({ id }).delete().table('categories');
+      const response = await adminConnection.where({ id }).delete().table('categories');
       if (response === 0) {
         return {
           status: 404,
