@@ -4,11 +4,8 @@
   "description": "Loja Online de artigos esportivos",
   "main": "",
   "scripts": {
-    "dev": "webpack --mode=development --watch",
-    "build": "webpack --mode=production",
-    "none": "webpack --mode=none",
-    "sass_dev": "sass --watch ./src/style/sass/index.scss:./src/style/main.css",
-    "sass_build": "sass ./src/style/sass/index.scss:./src/style/main.css --style=compressed"
+    "dev": "nodemon app",
+    "build": "node app"
   },
   "repository": {
     "type": "git",
