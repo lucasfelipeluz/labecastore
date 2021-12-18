@@ -76,7 +76,7 @@ class ProductsController {
     };
 
     const response = await Products.updateData(id, data)
-    
+
     if (response.status) {
       Responses.success(res, response.data)
       return

@@ -5,66 +5,60 @@ const CategoriesModel = new mongoose.Schema({
   slug: String,
 })
 
-module.exports = CategoriesModel;
+const categories = mongoose.model('Categories', CategoriesModel);
 
 class Categories {
   async findAll() {
     try {
-      const result = await adminConnection.select(['id', 'title']).table('categories');
-      return result;
+      const data = await categories.find();
+      return {status:true, data};
     } catch (error) {
       console.log(error);
-      return false;
+      return {status: false, data: []};
     }
   }
 
   async insertData({ title, slug }) {
     try {
-      await adminConnection.insert({ title, slug }).into('categories');
-      return true;
+      const newCategory = new categories({
+        title, slug
+      })
+      await newCategory.save()
+
+      return {status: true, data: []};
     } catch (error) {
       console.log(error);
-      return false;
-    }
-  }
-
-  async updateData(id, { title, slug }) {
-    try {
-      const response = await adminConnection.where({ id }).update({ title, slug }).table('categories');
-
-      if (response === 0) {
-        return {
-          status: 404,
-        };
-      }
-
-      return {
-        status: true,
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        status: false,
-      };
+      return {status: false, data: []};
     }
   }
 
   async deleteData(id) {
     try {
-      const response = await adminConnection.where({ id }).delete().table('categories');
-      if (response === 0) {
-        return {
-          status: 404,
-        };
-      }
-      return { status: true };
+      const result = await categories.findByIdAndDelete({'_id': id})
+      
+      if (result === null) return {status: null, data: []}
+
+      return {status: true, data: [] };
     } catch (error) {
       console.log(error);
-      return {
-        status: false,
-      };
+      return {status: false, data: []};
     }
   }
+
+  async updateData(id, { title, slug }) {
+    try {
+      const response = await categories.findByIdAndUpdate(id, {title, slug})
+
+      if(response === null ) return {status: null, data: []}
+
+      return {status: true, data:[]};
+    } catch (error) {
+      console.log(error);
+      return {status: false, data: []};
+    }
+  }
+
+
 }
 
 module.exports = new Categories();
