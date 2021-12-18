@@ -1,5 +1,5 @@
 const Products = require('../../models/Products');
-const Responses = require('../../utils/Responses');
+const Responses = require('../../utils/Responses')
 
 
 class ProductsController {
