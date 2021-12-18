@@ -12,7 +12,13 @@ const ProductsModel = new mongoose.Schema({
     eg: Number,
     egg: Number,
   },
-  idCategory: Number,
+  idCategory: {
+    idcategory: Number, 
+    idcategory1: Number, 
+    idcategory2: Number, 
+    idcategory3: Number, 
+    idcategory4: Number, 
+  },
   price: Number,
   images: {
     urlImages: String,
@@ -36,53 +42,48 @@ class Products {
     }
   }
 
-  async insertData({ title, price, inventory }) {
+  async insertData(title, description, inventory, idCategory, price, images) {
     try {
-      await adminConnection.insert({ title, price, inventory: JSON.stringify(inventory) }).into('products');
-      return true;
+      const newProduct = new products({
+        title, description, inventory,
+        idCategory, price, images
+      })
+
+      await newProduct.save()
+      return {status: true, data: []};
     } catch (error) {
       console.log(error);
-      return false;
-    }
-  }
-
-  async updateData(id, { title, price, inventory }) {
-    try {
-      const response = await adminConnection.where({ id })
-        .update({ title, price, inventory: JSON.stringify(inventory) })
-        .table('products');
-
-      if (response === 0) {
-        return {
-          status: 404,
-        };
-      }
-
-      return {
-        status: true,
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        status: false,
-      };
+      return {status: false, data: []};
     }
   }
 
   async deleteData(id) {
     try {
-      const response = await adminConnection.where({ id }).delete().table('products');
-      if (response === 0) {
-        return {
-          status: 404,
-        };
+      const result = await products.findByIdAndDelete({ '_id': id })
+      if (result === null) {
+        return {status: null, data: []}
       }
-      return { status: true };
+      return { status: true, data: []};
     } catch (error) {
       console.log(error);
       return {
         status: false,
+        data: []
       };
+    }
+  }
+
+  async updateData(id, { title, description, price, inventory, idCategory, images }) {
+    try {
+      const response = await products.findByIdAndUpdate(id,
+        { title, description, price, inventory, idCategory, images })
+      
+      if (response === null) return { status: null, data: [] }
+      
+      return {status: true, data: []}
+    } catch (error) {
+      console.log(error)
+      return {status: false, data: []}
     }
   }
 }

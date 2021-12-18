@@ -14,62 +14,39 @@ class ProductsController {
   }
 
   async create(req, res) {
-    const { title, price, inventory } = req.body;
-
-    const data = {
-      title,
-      price,
-      inventory,
-    };
-    const response = await Products.insertData(data);
-
-    if (!response) {
-      res.status(406);
-      res.json({
-        error: 'Erro interno',
-      });
-      return;
+    const {
+      title, description, inventory,
+      idCategory, price, images
+    } = req.body;
+    
+    if (Object.keys(images).length < 1) {
+      Responses.customBadRequest(res, 'Precisa colocar pelo menos uma imagem')
+      return
+    }
+    if (Object.keys(idCategory).length < 1) {
+      Responses.customBadRequest(res, 'Precisa colocar pelo menos uma categoria')
+      return
+    }
+    if (title === '' || title === undefined || title === null) {
+      Responses.customNotAcceptable(res, 'Título é obrigatório')
+      return
+    }
+    if (description === '' || description === undefined || description === null) {
+      Responses.customNotAcceptable(res, 'A Descrição é obrigatória')
+      return
+    }
+    if (price === '' || price === undefined || price === null || price < 1) {
+      Responses.customNotAcceptable(res, 'O preço é obrigatório e não pode ser 0')
+      return
     }
 
-    res.status(200);
-    res.json({
-      status: 'Produto adicionado',
-      registro: title,
-    });
-  }
-
-  async update(req, res) {
-    const { title, price, inventory } = req.body;
-    const { id } = req.params;
-
-    const data = {
-      title,
-      price,
-      inventory,
-    };
-
-    const response = await Products.updateData(id, data);
-
-    if (response.status === false) {
-      res.status(406);
-      res.json({
-        error: 'Erro interno',
-      });
+    const response = await Products.insertData(title, description, inventory, idCategory, price, images)
+    if (response.status) {
+      Responses.success(res, response.data)
+      return
     }
-
-    if (response.status === 404) {
-      res.status(404);
-      res.json({
-        error: 'Categoria não encontrada',
-      });
-      return;
-    }
-
-    res.status(200);
-    res.json({
-      status: 'Categoria editada',
-      registro: title,
-    });
+    Responses.internalServerError(res)
+  
   }
 
   async delete(req, res) {
@@ -77,25 +54,40 @@ class ProductsController {
 
     const response = await Products.deleteData(id);
 
-    if (response.status === 404) {
-      res.status(404);
-      res.json({
-        error: 'Categoria não encontrada',
-      });
-      return;
+    if (response.status) {
+      Responses.success(res, response.data)
+      return
+    }
+    if (response.status === null) {
+      Responses.customUnauthenticated(res, 'Usuário não encontrado')
+      return
+    }
+    Responses.internalServerError(res)
+  }
+
+  async update(req, res) {
+    const {
+      title, description, price, inventory, idCategory, images
+    } = req.body;
+    const { id } = req.params;
+
+    const data = {
+      title, description, price, inventory, idCategory, images
+    };
+
+    const response = await Products.updateData(id, data)
+    
+    if (response.status) {
+      Responses.success(res, response.data)
+      return
+    }
+    if (response.status === null) {
+      Responses.customUnauthenticated(res, 'Usuário não encontrado')
+      return
     }
 
-    if (response.status === false) {
-      res.status(406);
-      res.json({
-        error: 'Erro interno',
-      });
-    }
 
-    res.status(200);
-    res.json({
-      status: 'Categoria apagada.',
-    });
+    Responses.internalServerError(res)
   }
 }
 
