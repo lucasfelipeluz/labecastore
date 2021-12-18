@@ -1,5 +1,5 @@
 const Products = require('../../models/Products');
-const Responses = require('../../utils/Responses')
+const Responses = require('../../utils/Responses');
 
 
 class ProductsController {
@@ -76,7 +76,7 @@ class ProductsController {
     };
 
     const response = await Products.updateData(id, data)
-    
+
     if (response.status) {
       Responses.success(res, response.data)
       return
