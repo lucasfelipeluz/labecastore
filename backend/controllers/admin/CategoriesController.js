@@ -1,5 +1,4 @@
 const slugify = require('slugify');
-const mongoose = require('mongoose')
 const Categories = require('../../models/Categories');
 const Responses = require('../../utils/Responses')
 
