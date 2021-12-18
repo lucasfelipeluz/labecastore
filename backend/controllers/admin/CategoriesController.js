@@ -1,4 +1,5 @@
 const slugify = require('slugify');
+const mongoose = require('mongoose')
 const Categories = require('../../models/Categories');
 
 class CategoriesController {
