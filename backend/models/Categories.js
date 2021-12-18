@@ -1,4 +1,11 @@
-const adminConnection = require('../databases/adminConnection');
+const mongoose = require('mongoose');
+
+const CategoriesModel = new mongoose.Schema({
+  title: String,
+  slug: String,
+})
+
+module.exports = CategoriesModel;
 
 class Categories {
   async findAll() {

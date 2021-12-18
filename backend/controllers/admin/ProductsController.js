@@ -1,22 +1,16 @@
 const Products = require('../../models/Products');
+const Responses = require('../../utils/Responses')
+
 
 class ProductsController {
   async index(req, res) {
-    const products = await Products.findAll();
+    const response = await Products.findAll();
 
-    if (!products) {
-      res.status(500);
-      res.json({
-        data: [],
-        erro: 'Internal Server Error',
-      });
-      return;
+    if (response.status) {
+      Responses.success(res, response.data)
+      return 
     }
-
-    res.status(200);
-    res.json({
-      data: products,
-    });
+    Responses.internalServerError(res)
   }
 
   async create(req, res) {
