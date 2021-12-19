@@ -21,6 +21,14 @@ class Response{
       status: 'Internal Server Error'
     })
   }
+
+  customInternalServerError(res, index) {
+    res.status(501)
+    res.json({
+      data: [],
+      status: `Houve problemas no servidor no item ${index}`
+    })
+  }
   
   unauthenticated(res) {
     res.status(401)

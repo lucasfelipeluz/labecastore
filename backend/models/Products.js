@@ -21,11 +21,11 @@ const ProductsModel = new mongoose.Schema({
   },
   price: Number,
   images: {
-    urlImages: String,
-    urlImages1: String,
-    urlImages2: String,
-    urlImages3: String,
-    urlImages4: String,
+    img: {url: String, filename: String},
+    img1: {url: String, filename: String},
+    img2: {url: String, filename: String},
+    img3: {url: String, filename: String},
+    img4: {url: String, filename: String}
   }
 })
 

@@ -5,66 +5,71 @@ const aws = require('aws-sdk')
 
 const uploadConfig = require('../config/upload');
 
-class S3Storage{
-  client = new aws.S3({
-    region: 'us-east-1'
-  });
+class S3Storage {
+  constructor() {
+    this.client = new aws.S3({
+      region: 'us-east-1'
+    });
+
+  }
 
   async saveFile(filename) {
     const originalPath = path.resolve(uploadConfig.directory, filename);
-    const contentyType = mime.getType(originalPath);
 
-    if (!contentyType) {
+    const ContentyType = mime.getType(originalPath);
+
+    if (!ContentyType) {
       throw new Error('file not found')
     }
 
     const fileContent = await fs.promises.readFile(originalPath)
 
-    try {  
+    try {
       this.client.putObject({
         Bucket: 'labeca',
         Key: filename,
         Body: fileContent,
-        ContentyType: contentyType
-      }).promise
+      }).promise()
 
       await fs.promises.unlink(originalPath)
 
-      return {status: true, data: []}
+      return { status: true, data: [] }
     } catch (error) {
       console.log(error)
-      return {status: false, data: []}
+      return { status: false, data: [] }
     }
+
   }
 
+
   async deleteFile(filename) {
-    try {
-      await this.client
+  try {
+    await this.client
       .deleteObject({
         Bucket: 'labeca',
         Key: filename
       }).promise
-      
-      return {status: true, data: []}
-    } catch (error) {
-      console.log(error)
-      return {status: false, data: []}
-    }
+
+    return { status: true, data: [] }
+  } catch (error) {
+    console.log(error)
+    return { status: false, data: [] }
   }
+}
 
   async getUrl(filename) {
-    try {
-      const data = await this.client.getSignedUrl('getObject', {
-        Bucket: 'labeca',
-        Key: filename
-      })
-  
-      return {status: true, data,}
-    } catch (error) {
-      console.log(error)
-      return {status: false, data: []}
-    }
+  try {
+    const data = this.client.getSignedUrl('getObject', {
+      Bucket: 'labeca',
+      Key: filename
+    })
+
+    return { status: true, data, }
+  } catch (error) {
+    console.log(error)
+    return { status: false, data: [] }
   }
+}
 }
 
 module.exports = new S3Storage();
