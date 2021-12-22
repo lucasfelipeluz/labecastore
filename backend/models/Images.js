@@ -20,12 +20,12 @@ class Images {
     }
   }
 
-  async insertData(filename, url, idProduct = '') {
+  async insertData(filename, url, idProduct, used = false) {
     try {
-      const newImage = new DBImages({filename, url, idProduct})
-
+      const newImage = new DBImages({filename, url, idProduct, used})
       await newImage.save()
-      return {status: true, data: []};
+
+      return {status: true, data: [newImage._id]};
     } catch (error) {
       console.log(error);
       return {status: false, data: []};
@@ -60,7 +60,8 @@ class Images {
       console.log(error)
       return {status: false, data: []}
     }
-  } 
+  }
+
 }
 
 module.exports = new Images();

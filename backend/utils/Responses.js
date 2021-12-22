@@ -1,5 +1,5 @@
 class Response{
-  success(res, data) {
+  success(res, data = []) {
     res.status(200)
     res.json({
       data,

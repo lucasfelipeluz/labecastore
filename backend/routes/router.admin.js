@@ -19,6 +19,7 @@ router.post('/signup', AdminController.newUser)
 router.get('/products', ProductsController.index);
 router.post('/products', ProductsController.create);
 router.put('/products/:id', ProductsController.update);
+router.put('/products/dataImage/:id', ProductsController.updateImg)
 router.delete('/products/:id', ProductsController.delete);
 router.get('/products/images', ProductsController.list)
 router.post('/products/upload', upload.array('photos', 5), ProductsController.upload);

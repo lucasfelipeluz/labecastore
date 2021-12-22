@@ -13,19 +13,19 @@ const ProductsModel = new mongoose.Schema({
     egg: Number,
   },
   idCategory: {
-    idcategory: Number, 
-    idcategory1: Number, 
-    idcategory2: Number, 
-    idcategory3: Number, 
-    idcategory4: Number, 
+    0: Number, 
+    1: Number, 
+    2: Number, 
+    3: Number, 
+    4: Number, 
   },
   price: Number,
   images: {
-    img: {url: String, filename: String},
-    img1: {url: String, filename: String},
-    img2: {url: String, filename: String},
-    img3: {url: String, filename: String},
-    img4: {url: String, filename: String}
+    0: {url: String, filename: String, idImage: String},
+    1: {url: String, filename: String, idImage: String},
+    2: {url: String, filename: String, idImage: String},
+    3: {url: String, filename: String, idImage: String},
+    4: {url: String, filename: String, idImage: String}
   }
 })
 
@@ -48,9 +48,8 @@ class Products {
         title, description, inventory,
         idCategory, price, images
       })
-
       await newProduct.save()
-      return {status: true, data: []};
+      return {status: true, data: [newProduct._id]};
     } catch (error) {
       console.log(error);
       return {status: false, data: []};
@@ -78,6 +77,19 @@ class Products {
       const response = await products.findByIdAndUpdate(id,
         { title, description, price, inventory, idCategory, images })
       
+      if (response === null) return { status: null, data: [] }
+      
+      return {status: true, data: []}
+    } catch (error) {
+      console.log(error)
+      return {status: false, data: []}
+    }
+  }
+
+  async updateDataImage(id, images) {
+    try {
+      const response = await products.findByIdAndUpdate(id, {images})
+
       if (response === null) return { status: null, data: [] }
       
       return {status: true, data: []}

@@ -18,22 +18,14 @@ class ProductsController {
   }
 
   async create(req, res) {
-    const {
-      title, description, inventory,
-      idCategory, price, images
-    } = req.body;
-    
-    console.log({title, description, inventory,
-      idCategory, price, images})
+    const { title, description, price, idCategory,
+            inventory, images
+          } = req.body;
 
-    if (Object.keys(images).length < 1) {
-      Responses.customBadRequest(res, 'Precisa colocar pelo menos uma imagem')
-      return
-    }
-    if (Object.keys(idCategory).length < 1) {
-      Responses.customBadRequest(res, 'Precisa colocar pelo menos uma categoria')
-      return
-    }
+    /* 
+    Verificando se campos foram preenchidos.
+    Inventory não é obrigatório
+    */
     if (title === '' || title === undefined || title === null) {
       Responses.customNotAcceptable(res, 'Título é obrigatório')
       return
@@ -46,14 +38,52 @@ class ProductsController {
       Responses.customNotAcceptable(res, 'O preço é obrigatório e não pode ser 0')
       return
     }
-
-    const response = await Products.insertData(title, description, inventory, idCategory, price, images)
-    if (response.status) {
-      Responses.success(res, response.data)
+    if (Object.keys(idCategory).length < 1) {
+      Responses.customBadRequest(res, 'Precisa colocar pelo menos uma categoria')
       return
     }
-    Responses.internalServerError(res)
-  
+    if (Object.keys(images).length < 1) {
+      Responses.customBadRequest(res, 'Precisa colocar pelo menos uma imagem')
+      return
+    }
+
+    /* 
+    Salvando os dados no banco de dados
+    */
+
+    /* Salvando informações das Imagens no Image*/
+    Object.values(images).forEach(async (image, index, array) => {
+      let filename = image.filename;
+      let urlFile = image.url;
+      let used = false;
+      let idProduct = "undefined";
+
+      const responseImages = await Images.insertData(filename, urlFile, idProduct, used);
+      if (responseImages.status === false) Responses.internalServerError(res);
+
+      updateInfoImages(index, Object.values(responseImages.data).toString(), array)
+    })
+
+    function updateInfoImages(index, info, array) {
+      images[index].idImage = info;
+
+      /* Checar se todos os itens ja estão no images */
+      if(index === array.length - 1 ) salvandoProduto(images)
+    }
+
+    /* Salvar Produto */
+    async function salvandoProduto(newImages) {
+      const responseProducts = await Products
+        .insertData(title, description, inventory, idCategory, price, newImages);
+      
+      if (responseProducts.status === false) Responses.internalServerError(res);
+
+      /* Adicionar Id do Produto no Image */
+      Object.values(newImages).forEach(async (image) => {
+        const responseUpdateImage = await Images.updateData(image.idImage, Object.values(responseProducts.data).toString())
+      })
+    }
+    Responses.success(res)
   }
 
   async delete(req, res) {
