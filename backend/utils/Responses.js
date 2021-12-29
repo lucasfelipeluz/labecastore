@@ -1,5 +1,5 @@
 class Response{
-  success(res, data) {
+  success(res, data = []) {
     res.status(200)
     res.json({
       data,
@@ -19,6 +19,14 @@ class Response{
     res.json({
       data: [],
       status: 'Internal Server Error'
+    })
+  }
+
+  customInternalServerError(res, index) {
+    res.status(501)
+    res.json({
+      data: [],
+      status: `Houve problemas no servidor no item ${index}`
     })
   }
   

@@ -4,11 +4,8 @@
   "description": "Loja Online de artigos esportivos",
   "main": "",
   "scripts": {
-    "dev": "webpack --mode=development --watch",
-    "build": "webpack --mode=production",
-    "none": "webpack --mode=none",
-    "sass_dev": "sass --watch ./src/style/sass/index.scss:./src/style/main.css",
-    "sass_build": "sass ./src/style/sass/index.scss:./src/style/main.css --style=compressed"
+    "dev": "nodemon app",
+    "build": "node app"
   },
   "repository": {
     "type": "git",
@@ -30,9 +27,13 @@
     "@babel/core": "^7.15.5",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.15.6",
+    "aws-sdk": "^2.1046.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "knex": "^0.95.14",
+    "mime": "^3.0.0",
     "mongoose": "^6.1.2",
+    "multer": "^1.4.4",
     "mysql2": "^2.3.2",
     "nodemon": "^2.0.14",
     "sequelize": "^6.9.0",
