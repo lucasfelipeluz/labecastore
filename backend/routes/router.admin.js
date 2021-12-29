@@ -1,21 +1,29 @@
 const express = require('express');
 const multer = require('multer')
 
+/* Importando Configurações do Upload */
 const uploadConfig = require('../config/upload')
 
+/* Importando Controllers */
 const AdminController = require('../controllers/admin/Admin');
 const ProductsController = require('../controllers/admin/ProductsController');
 const CategoriesController = require('../controllers/admin/CategoriesController');
 
 const router = express.Router();
 
+/* Configurando e usando o Multer */
 const upload = multer(uploadConfig)
 
-router.get('/', AdminController.index);
+/*  Login e inscrição
+    Não precisam de credencias de Administrador */
 router.post('/login', AdminController.login)
 router.post('/signup', AdminController.newUser)
 
-/* Products */
+/* Página Inicial de Administrador */
+router.get('/', AdminController.index);
+
+/*  Products
+    Precisa de credenciais de Administrador */
 router.get('/products', ProductsController.index);
 router.post('/products', ProductsController.create);
 router.put('/products/:id', ProductsController.update);
@@ -26,7 +34,8 @@ router.post('/products/upload', upload.array('photos', 5), ProductsController.up
 router.delete('/products/images/:id', ProductsController.deleteImg);
 router.put('/products/images/:id', ProductsController.updateImg);
 
-/* Categories */
+/*  Categories
+    Precisa de credenciais de Administrador */
 router.get('/categories', CategoriesController.index);
 router.post('/categories', CategoriesController.create);
 router.put('/categories/:id', CategoriesController.update);

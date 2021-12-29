@@ -1,6 +1,7 @@
 const User = require("../../models/admin/Users");
 const Responses = require('../../utils/Responses')
 
+/* Classe responsável pelo servições da rota Admin */
 class Admin {
   index(req, res) {
     res.json({

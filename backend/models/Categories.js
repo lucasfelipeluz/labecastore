@@ -5,6 +5,8 @@ const CategoriesModel = new mongoose.Schema({
   slug: String,
 })
 
+/* Classes responsável por criação de requisição
+    para o banco de dados MongoDB */
 const categories = mongoose.model('Categories', CategoriesModel);
 
 class Categories {

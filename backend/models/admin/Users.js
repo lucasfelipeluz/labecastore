@@ -1,5 +1,7 @@
 const adminConnection = require('../../databases/adminConnection')
 
+/* Classes responsável por criação de requisição
+    para o banco de dados MySQL */
 class User {
   async findByNickname(nickname) {
     try {

@@ -2,6 +2,7 @@ const slugify = require('slugify');
 const Categories = require('../../models/Categories');
 const Responses = require('../../utils/Responses')
 
+/* Classe responsável pelo servições da rota admin/categories */
 class CategoriesController {
   async index(req, res) {
     const response = await Categories.findAll()

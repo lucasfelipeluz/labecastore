@@ -1,3 +1,5 @@
+/*  Método responsável por conectar ao Banco de dados
+    MySQL. */
 const adminConnection = require('knex')({
   client: 'mysql2',
   connection: {

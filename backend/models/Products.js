@@ -31,6 +31,9 @@ const ProductsModel = new mongoose.Schema({
 
 const products = mongoose.model('Products', ProductsModel);
 
+
+/* Classes responsável por criação de requisição
+    para o banco de dados MongoDB */
 class Products {
   async findAll() {
     try {
