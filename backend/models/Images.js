@@ -7,6 +7,8 @@ const ImagesModel = new mongoose.Schema({
   used: Boolean
 })
 
+/* Classes responsável por criação de requisição
+    para o banco de dados MongoDB */
 const DBImages = mongoose.model('Images', ImagesModel);
 
 class Images {

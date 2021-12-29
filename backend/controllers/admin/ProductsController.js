@@ -5,6 +5,7 @@ const Images = require('../../models/Images')
 const UploadImages = require('../../aws/UploadImages')
 const GetUrlImages = require('../../aws/GetUrlImages')
 
+/* Classe responsável pelo servições da rota admin/products */
 class ProductsController {
 
   async index(req, res) {

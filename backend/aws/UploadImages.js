@@ -1,5 +1,7 @@
 const S3Storage = require('./S3Storage');
 
+/*  Método que faz o upload da Imagem
+    para o S3 */
 class UploadImages{
   async execute(filename) {
     try {

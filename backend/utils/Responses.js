@@ -1,3 +1,4 @@
+/* Pré-sets de respostas de servidor que são mais usadas */
 class Response{
   success(res, data = []) {
     res.status(200)

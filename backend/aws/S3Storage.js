@@ -5,6 +5,7 @@ const aws = require('aws-sdk')
 
 const uploadConfig = require('../config/upload');
 
+/* Classe responsável por se conectar com AWS S3 */
 class S3Storage {
   constructor() {
     this.client = new aws.S3({
@@ -13,6 +14,7 @@ class S3Storage {
 
   }
 
+  /* Salvar Arquivo no Bucket */
   async saveFile(filename) {
     const originalPath = path.resolve(uploadConfig.directory, filename);
 
@@ -41,7 +43,7 @@ class S3Storage {
 
   }
 
-
+  /* Deletar Arquivo no Bucket */
   async deleteFile(filename) {
   try {
     await this.client
@@ -57,6 +59,7 @@ class S3Storage {
   }
 }
 
+  /* Retorna a Url do Arquivo */
   async getUrl(filename) {
   try {
     const data = this.client.getSignedUrl('getObject', {

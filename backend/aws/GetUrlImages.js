@@ -1,5 +1,7 @@
 const S3Storage = require('./S3Storage')
 
+/*  Método que faz o request da Url da Imagem
+    para o S3 */
 class GetUrlImages{
   async execute(filename) {
     try {
