@@ -8,22 +8,28 @@ const GetUrlImages = require('../../aws/GetUrlImages')
 /* Classe responsável pelo servições da rota admin/products */
 class ProductsController {
 
+  /* Retornará todos os Produtos */
   async index(req, res) {
     const response = await Products.findAll();
 
+    /* Verifica se o status da resposta é true, se for, retorna o Produtos */
     if (response.status) {
       Responses.success(res, response.data)
       return 
     }
+
+    /* Caso status da resposta seja false, retornará um Erro Interno */
     Responses.internalServerError(res)
   }
 
+  /* Criação de Produtos */
   async create(req, res) {
     const { title, description, price, idCategory,
             inventory, images
           } = req.body;
 
     /* 
+
     Verificando se campos foram preenchidos.
     Inventory não é obrigatório
     */
@@ -52,19 +58,21 @@ class ProductsController {
     Salvando os dados no banco de dados
     */
 
-    /* Salvando informações das Imagens no Image*/
+    /* Salvando informações das Imagens no Banco de dados Image*/
     Object.values(images).forEach(async (image, index, array) => {
       let filename = image.filename;
       let urlFile = image.url;
       let used = false;
       let idProduct = "undefined";
 
+      /* Insere os dados na tabela e verifica se deu certo */
       const responseImages = await Images.insertData(filename, urlFile, idProduct, used);
       if (responseImages.status === false) Responses.internalServerError(res);
 
       updateInfoImages(index, Object.values(responseImages.data).toString(), array)
     })
 
+    /* Adiciona o id do Image nas informações do Produto */
     function updateInfoImages(index, info, array) {
       images[index].idImage = info;
 
@@ -72,27 +80,31 @@ class ProductsController {
       if(index === array.length - 1 ) salvandoProduto(images)
     }
 
-    /* Salvar Produto */
+    /* Salva Produto */
     async function salvandoProduto(newImages) {
+      /* Salva as informações e ver se deu certo */
       const responseProducts = await Products
         .insertData(title, description, inventory, idCategory, price, newImages);
       
       if (responseProducts.status === false) Responses.internalServerError(res);
 
-      /* Adicionar Id do Produto no Image */
+      /* Adicionar Id do Produto no Image e vê se deu certo */
       Object.values(newImages).forEach(async (image) => {
         const responseUpdateImage = await Images.updateData(image.idImage, Object.values(responseProducts.data).toString())
+        if (responseUpdateImage.status === false) Responses.internalServerError(res) 
       })
     }
     Responses.success(res)
   }
 
+  /* Deletar Produtos */
   async delete(req, res) {
     const { id } = req.params;
 
+    /* Deletando Produto e checando se deu certo */
     const responseProducts = await Products.deleteData(id);
-    if (responseProducts.status) {
-      Responses.success(res, responseProducts.data)
+    if (responseProducts.status === false) {
+      Responses.custominternalServerError(res, 'Problemas internos ao localizar o Produto')
       return
     }
     if (responseProducts.status === null) {
@@ -100,9 +112,10 @@ class ProductsController {
       return
     }
 
+    /* Deletando informações da Imagem e checando se deu certo */
     const responseImages = await Images.deleteData(id);
-    if (responseImages.status) {
-      Responses.success(res, response.data)
+    if (responseImages.status === false) {
+      Responses.customInternalServerError(res, 'Problemas internos ao localizar a imagem')
       return
     }
     if (responseImages.status === null) {
@@ -110,11 +123,10 @@ class ProductsController {
       return
     }
 
-
-
-    Responses.internalServerError(res)
+    Responses.success(res)
   }
 
+  /* Atualizando Produtos */
   async update(req, res) {
     const {
       title, description, price, inventory, idCategory, images

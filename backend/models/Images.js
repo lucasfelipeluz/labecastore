@@ -36,8 +36,8 @@ class Images {
 
   async deleteData(idProduct) {
     try {
-      const result = await DBImages.findByIdAndDelete({ 'idProduct': idProduct })
-      if (result === null) {
+      const result = await DBImages.deleteMany({ idProduct });
+      if (result.deletedCount < 1) {
         return {status: null, data: []}
       }
       return { status: true, data: []};
