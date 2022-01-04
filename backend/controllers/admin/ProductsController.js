@@ -1,6 +1,6 @@
-const Products = require('../../models/Products');
+const Products = require('../../models/admin/Products');
 const Responses = require('../../utils/Responses');
-const Images = require('../../models/Images')
+const Images = require('../../models/admin/Images')
 
 const UploadImages = require('../../aws/UploadImages')
 const GetUrlImages = require('../../aws/GetUrlImages')
@@ -152,78 +152,6 @@ class ProductsController {
     Responses.internalServerError(res)
   }
 
-
-  /* IMAGES */
-  async upload(req, res) {
-    async function checkResponses(res, response, index) {
-      if (response.status) {
-        return
-      }
-      Responses.customInternalServerError(res, index)
-    }
-
-    const { files } = req;
-
-    const uploadImages = new UploadImages();
-    const getUrlImages = new GetUrlImages();
-    
-    files.forEach(async (file, index) => {
-      const responses = [];
-      const responseUploadAWS = await uploadImages.execute(file.filename);
-      const responseCreateLinkAWS = await getUrlImages.execute(file.filename);
-      const responseDB = await Images.insertData(file.filename, responseCreateLinkAWS.data)
-      
-      checkResponses(res, responseUploadAWS, index)
-      checkResponses(res, responseCreateLinkAWS, index)
-      checkResponses(res, responseDB, index)
-    })
-    Responses.customSuccess(res, 'Upload concluido')
-  }
-
-  async list(req, res) {
-    const response = await Images.findAll();
-
-    if (response.status) {
-      Responses.success(res, response.data)
-      return 
-    }
-    Responses.internalServerError(res)
-  }
-
-  async deleteImg(req, res) {
-    const { id } = req.params;
-
-    const response = await Images.deleteData(id);
-
-    if (response.status) {
-      Responses.success(res, response.data)
-      return
-    }
-    if (response.status === null) {
-      Responses.customUnauthenticated(res, 'Imagem não encontrada')
-      return
-    }
-    Responses.internalServerError(res)
-  }
-
-  async updateImg(req, res) {
-    const { idProduct } = req.body;
-    const { id } = req.params;
-
-    const response = await Images.updateData(id, idProduct)
-
-    if (response.status) {
-      Responses.success(res, response.data)
-      return
-    }
-    if (response.status === null) {
-      Responses.customUnauthenticated(res, 'Usuário não encontrado')
-      return
-    }
-
-
-    Responses.internalServerError(res)
-  }
 }
 
 module.exports = new ProductsController();

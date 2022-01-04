@@ -1,5 +1,5 @@
 const Responses = require('../../utils/Responses')
-const Images = require('../../models/Images')
+const Images = require('../../models/admin/Images')
 
 const UploadImages = require('../../aws/UploadImages')
 const GetUrlImages = require('../../aws/GetUrlImages')
