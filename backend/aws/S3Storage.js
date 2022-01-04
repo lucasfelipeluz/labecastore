@@ -45,19 +45,22 @@ class S3Storage {
 
   /* Deletar Arquivo no Bucket */
   async deleteFile(filename) {
+    const params = {
+      Bucket: 'labeca',
+      Key: filename
+    }
   try {
-    await this.client
-      .deleteObject({
-        Bucket: 'labeca',
-        Key: filename
+    this.client
+      .deleteObject(params, (err, data) => {
+        if (err) throw 'Erro Interno';
       }).promise
-
+    
     return { status: true, data: [] }
   } catch (error) {
     console.log(error)
     return { status: false, data: [] }
   }
-}
+  }
 
   /* Retorna a Url do Arquivo */
   async getUrl(filename) {
@@ -72,7 +75,8 @@ class S3Storage {
     console.log(error)
     return { status: false, data: [] }
   }
-}
+  }
+
 }
 
 module.exports = new S3Storage();

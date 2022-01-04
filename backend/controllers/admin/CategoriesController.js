@@ -1,5 +1,5 @@
 const slugify = require('slugify');
-const Categories = require('../../models/Categories');
+const Categories = require('../../models/admin/Categories');
 const Responses = require('../../utils/Responses')
 
 /* Classe responsável pelo servições da rota admin/categories */
