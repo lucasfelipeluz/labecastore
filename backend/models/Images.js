@@ -22,6 +22,16 @@ class Images {
     }
   }
 
+  async findById(id) {
+    try {
+      const data = await DBImages.findById(id)
+      return {status: true, data}
+    } catch (error) {
+      console.log(error)
+      return {status: false, data: []}
+    }
+  }
+
   async insertData(filename, url, idProduct, used = false) {
     try {
       const newImage = new DBImages({filename, url, idProduct, used})
@@ -37,6 +47,22 @@ class Images {
   async deleteData(idProduct) {
     try {
       const result = await DBImages.deleteMany({ idProduct });
+      if (result.deletedCount < 1) {
+        return {status: null, data: []}
+      }
+      return { status: true, data: []};
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        data: []
+      };
+    }
+  }
+
+  async deleteById(id) {
+    try {
+      const result = await DBImages.findByIdAndDelete(id)
       if (result.deletedCount < 1) {
         return {status: null, data: []}
       }

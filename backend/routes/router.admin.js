@@ -42,6 +42,6 @@ router.delete('/categories/:id', CategoriesController.delete);
 router.get('/images', ImagesController.index)
 router.post('/images', upload.array('photos', 5), ImagesController.create)
 router.put('/images/:id', ImagesController.update)
-router.delete('images/:id', ImagesController.delete)
+router.delete('/images/:id', ImagesController.delete)
 
 module.exports = router;

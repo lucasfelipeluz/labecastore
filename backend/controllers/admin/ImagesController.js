@@ -3,6 +3,7 @@ const Images = require('../../models/Images')
 
 const UploadImages = require('../../aws/UploadImages')
 const GetUrlImages = require('../../aws/GetUrlImages')
+const DeleteImage = require('../../aws/DeleteImage')
 
 /*  Classe responsável por upload, deleção e atualização de Images e informações
     admin/images */
@@ -54,21 +55,27 @@ class ImagesController{
     Responses.customSuccess(res, 'Upload concluido')
   }
 
-  /* Deleta as imagens na AWS e informações no BD */
+  /* Deleta a imagem na AWS e informações no BD segundo o ID*/
   async delete(req, res) {
     const { id } = req.params;
 
-    const response = await Images.deleteData(id);
-
-    if (response.status) {
-      Responses.success(res, response.data)
-      return
-    }
+    /* Verifica se a imagem está na AWS e no BD */
+    const response = await Images.findById(id)
     if (response.status === null) {
       Responses.customUnauthenticated(res, 'Imagem não encontrada')
       return
     }
-    Responses.internalServerError(res)
+
+    const { filename } = response.data;
+
+    /* Deletar as informações da imagem */
+    await Images.deleteById(id)
+
+    /* Deletar a imagem na aws */
+    const deleteImage = new DeleteImage();
+    const responseAWS = await deleteImage.execute(filename)
+
+    Responses.customSuccess(res, 'Imagem apagada!')
   }
 
   /* Atualiza as informações das Imagens do BD */
