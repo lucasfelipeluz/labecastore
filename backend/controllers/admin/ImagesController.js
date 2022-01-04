@@ -9,7 +9,7 @@ const GetUrlImages = require('../../aws/GetUrlImages')
 class ImagesController{
 
   /* Retorna todas as imagens na nuvem */
-  index(req, res) {
+  async index(req, res) {
     /* Retornar todas as imagens no BD */
     const response = await Images.findAll();
 
@@ -21,7 +21,7 @@ class ImagesController{
   }
 
   /* Responsável pelo Upload da imagem e salvar informações dela. */
-  create(req, res) {
+  async create(req, res) {
 
     /* Checa se as respostas são positivas */
     async function checkResponses(res, response, index) {
@@ -55,7 +55,7 @@ class ImagesController{
   }
 
   /* Deleta as imagens na AWS e informações no BD */
-  delete(req, res) {
+  async delete(req, res) {
     const { id } = req.params;
 
     const response = await Images.deleteData(id);
@@ -72,7 +72,7 @@ class ImagesController{
   }
 
   /* Atualiza as informações das Imagens do BD */
-  update(req, res) {
+  async update(req, res) {
     const { idProduct } = req.body;
     const { id } = req.params;
 
