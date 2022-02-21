@@ -1,9 +1,10 @@
 /* Pré-sets de respostas de servidor que são mais usadas */
 class Response{
-  success(res, data = []) {
+  success(res, data = {}, info = {}) {
     res.status(200)
     res.json({
       data,
+      info
     })
   }
 

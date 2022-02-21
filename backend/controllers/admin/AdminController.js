@@ -4,13 +4,8 @@ const Responses = require('../../utils/Responses')
 /* Classe responsável pelo servições da rota Admin */
 class Admin {
   index(req, res) {
-    res.json({
-      links: {
-        login: '/login',
-        category: '/categories',
-        product: '/products',
-      },
-    });
+    const helpRoutes = ['/admin/login', '/admin/products', '/admin/categories']
+    Responses.success(res, [], {helpRoutes});
   }
 
   async login(req, res) {
@@ -25,8 +20,9 @@ class Admin {
           return
         }
 
-        Responses.customSuccess(res, 'Logado!')
+        Responses.success(res, [], {status: 'Logado!'})
         return
+        
       } else {
         Responses.customUnauthenticated(res, 'Usuário não encontrado')
         return

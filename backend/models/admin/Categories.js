@@ -49,9 +49,9 @@ class Categories {
     }
   }
 
-  async insertData(data) {
+  async insertData({id = undefined, name, slug}) {
     try {
-      await database.insert(data)
+      await database.insert({id, name, slug})
         .table('categories');
 
       return {status: true, data: []};
