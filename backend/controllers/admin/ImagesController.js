@@ -7,8 +7,7 @@ const DeleteImage = require('../../aws/DeleteImage')
 
 /*  Classe responsável por upload, deleção e atualização de Images e informações
     admin/images */
-class ImagesController{
-
+class ImagesController {
   /* Retorna todas as imagens na nuvem */
   async index(req, res) {
     /* Retornar todas as imagens no BD */
@@ -19,39 +18,32 @@ class ImagesController{
       return 
     }
     Responses.internalServerError(res)
+    return
   }
 
   /* Responsável pelo Upload da imagem e salvar informações dela. */
   async create(req, res) {
-
-    /* Checa se as respostas são positivas */
-    async function checkResponses(res, response, index) {
+    async function checkResponses(res, response) {
       if (response.status) {
         return
       }
-      Responses.customInternalServerError(res, index)
+      Responses.customInternalServerError(res)
     }
 
     const { files } = req;
+    const nomeDoArquivo = files[0].filename;
 
     const uploadImages = new UploadImages();
     const getUrlImages = new GetUrlImages();
-    
-    /* Upload */
-    files.forEach(async (file, index) => {
-      const responses = [];
 
-      /* Upload AWS e criação de link de acesso a imagem */
-      const responseUploadAWS = await uploadImages.execute(file.filename);
-      const responseCreateLinkAWS = await getUrlImages.execute(file.filename);
+    const responseUploadAWS = await uploadImages.execute(nomeDoArquivo);
+    const responseCreateLinkAWS = await getUrlImages.execute(nomeDoArquivo);
+    const responseDB = await Images.insertData(nomeDoArquivo, responseCreateLinkAWS.data)
 
-      /* Salvamento de informações */
-      const responseDB = await Images.insertData(file.filename, responseCreateLinkAWS.data)
-      
-      checkResponses(res, responseUploadAWS, index)
-      checkResponses(res, responseCreateLinkAWS, index)
-      checkResponses(res, responseDB, index)
-    })
+    checkResponses(res, responseUploadAWS)
+    checkResponses(res, responseCreateLinkAWS)
+    checkResponses(res, responseDB)
+
     Responses.customSuccess(res, 'Upload concluido')
   }
 
@@ -59,43 +51,29 @@ class ImagesController{
   async delete(req, res) {
     const { id } = req.params;
 
-    /* Verifica se a imagem está na AWS e no BD */
-    const response = await Images.findById(id)
-    if (response.status === null) {
-      Responses.customUnauthenticated(res, 'Imagem não encontrada')
+    const responseFilename = await Images.findFilenaById(id);
+
+    if (responseFilename.status === null) {
+      Responses.customUnauthenticated(res, "Imagem não encontrada!");
       return
     }
 
-    const { filename } = response.data;
-
-    /* Deletar as informações da imagem */
-    await Images.deleteById(id)
-
-    /* Deletar a imagem na aws */
     const deleteImage = new DeleteImage();
-    const responseAWS = await deleteImage.execute(filename)
-
-    Responses.customSuccess(res, 'Imagem apagada!')
-  }
-
-  /* Atualiza as informações das Imagens do BD */
-  async update(req, res) {
-    const { idProduct } = req.body;
-    const { id } = req.params;
-
-    const response = await Images.updateData(id, idProduct)
-
-    if (response.status) {
-      Responses.success(res, response.data)
+    const responseAWS = await deleteImage.execute(responseFilename.data);
+    if(responseAWS.status === false) {
+      Responses.customInternalServerError(res, "Erro no servidor ao apagar a imagem");
       return
     }
 
-    if (response.status === null) {
-      Responses.customUnauthenticated(res, 'Usuário não encontrado')
+
+    const response = await Images.deleteData(id);
+    if(response.status === null) {
+      Responses.customUnauthenticated(res, "Imagem não encontrada");
       return
     }
 
-    Responses.internalServerError(res)
+    Responses.customSuccess(res, 'Imagem apagada!', responseFilename.data)
+    return
   }
 
 }

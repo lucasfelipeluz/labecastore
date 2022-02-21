@@ -1,20 +1,14 @@
-const mongoose = require('mongoose');
-
-const ImagesModel = new mongoose.Schema({
-  filename: String,
-  url: String,
-  idProduct: String,
-  used: Boolean
-})
+const database = require("../../databases/connection")
 
 /* Classes responsável por criação de requisição
-    para o banco de dados MongoDB */
-const DBImages = mongoose.model('Images', ImagesModel);
-
+    para o banco de dados MySQL */
 class Images {
   async findAll() {
     try {
-      const data = await DBImages.find()
+      const data = await database
+        .select(['id', 'filename', 'url'])
+        .table('images');
+
       return {status: true, data}
     } catch (error) {
       console.log(error)
@@ -24,7 +18,11 @@ class Images {
 
   async findById(id) {
     try {
-      const data = await DBImages.findById(id)
+      const data = await database
+        .select(['id', 'filename', 'url'])
+        .where({id})
+        .table('images');
+
       return {status: true, data}
     } catch (error) {
       console.log(error)
@@ -32,64 +30,90 @@ class Images {
     }
   }
 
-  async insertData(filename, url, idProduct, used = false) {
+  async findByProductId(ProductId) {
     try {
-      const newImage = new DBImages({filename, url, idProduct, used})
-      await newImage.save()
+      const relationalBankSearch = await database
+        .select('*')
+        .where({ProductId})
+        .table('products_images');
 
-      return {status: true, data: [newImage._id]};
-    } catch (error) {
-      console.log(error);
-      return {status: false, data: []};
-    }
-  }
+      let imageId = [];
 
-  async deleteData(idProduct) {
-    try {
-      const result = await DBImages.deleteMany({ idProduct });
-      if (result.deletedCount < 1) {
+      if (relationalBankSearch.length > 1) {
+        for(let i = 0; i < relationalBankSearch.length; i++){
+          imageId.push(relationalBankSearch[i].imageId)
+        }
+      } else if(relationalBankSearch.length === 1) {
+        imageId.push(relationalBankSearch[0].imageId)
+      } else if (relationalBankSearch.length === 0) {
         return {status: null, data: []}
       }
-      return { status: true, data: []};
-    } catch (error) {
-      console.log(error);
-      return {
-        status: false,
-        data: []
-      };
-    }
-  }
 
-  async deleteById(id) {
-    try {
-      const result = await DBImages.findByIdAndDelete(id)
-      if (result.deletedCount < 1) {
-        return {status: null, data: []}
-      }
-      return { status: true, data: []};
-    } catch (error) {
-      console.log(error);
-      return {
-        status: false,
-        data: []
-      };
-    }
-  }
+      const images = await Promise.all(
+        imageId.map(async item => {
+          return await database.select(['id', 'filename', 'url']).table('images').where({id: item})
+        })
+      ) 
 
-  async updateData(id, idProduct) {
-    try {
-      const response = await DBImages.findByIdAndUpdate(id,
-        { idProduct })
-      
-      if (response === null) return { status: null, data: [] }
-      
-      return {status: true, data: []}
+      return {status: true, images: images}
     } catch (error) {
       console.log(error)
       return {status: false, data: []}
     }
   }
 
+  async findFilenaById(id) {
+    try {
+      const data = await database
+        .select('filename')
+        .where({id})
+        .table('images');
+
+      if(data.length === 0) {
+        return { status: null, data: []}
+      }
+
+      const nomeDoArquivo = data[0].filename
+
+      return {status: true, data: nomeDoArquivo}
+    } catch (error) {
+      console.log(error)
+      return {status: false, data: []}
+    }
+  }
+
+  async insertData(filename, url) {
+    try {
+      await database.insert({filename, url})
+        .table('images');
+
+      return {status: true, data: []};
+    } catch (error) {
+      console.log(error);
+      return {status: false, data: []};
+    }
+  }
+ 
+  async deleteData(id) {
+    try {
+      const response = await database
+        .delete()
+        .where({id})
+        .table('images');
+
+      if(response < 1){
+        return { status: null, data: []}
+      }
+
+      return { status: true, data: []};
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        data: []
+      };
+    }
+  }
 }
 
 module.exports = new Images();

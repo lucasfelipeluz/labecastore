@@ -6,8 +6,11 @@ class UploadImages{
   async execute(filename) {
     try {
       const s3 = S3Storage;
-      await s3.saveFile(filename)
-      return {status: true, data: []}
+      const responseAWS = await s3.saveFile(filename)
+      if (responseAWS.status){
+        return {status: true, data: []}
+      }
+      throw new Error("Erro na conexão com AWS");
     } catch (error) {
       console.log(error)
       return {status: false, data: []}

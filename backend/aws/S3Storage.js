@@ -36,6 +36,7 @@ class S3Storage {
       await fs.promises.unlink(originalPath)
 
       return { status: true, data: [] }
+      
     } catch (error) {
       console.log(error)
       return { status: false, data: [] }
@@ -51,7 +52,7 @@ class S3Storage {
     }
   try {
     this.client
-      .deleteObject(params, (err, data) => {
+      .deleteObject(params, (err) => {
         if (err) throw 'Erro Interno';
       }).promise
     

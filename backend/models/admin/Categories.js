@@ -1,31 +1,59 @@
-const mongoose = require('mongoose');
-
-const CategoriesModel = new mongoose.Schema({
-  title: String,
-  slug: String,
-})
+const database = require("../../databases/connection");
 
 /* Classes responsável por criação de requisição
-    para o banco de dados MongoDB */
-const categories = mongoose.model('Categories', CategoriesModel);
-
+    para o banco de dados MySQL */
 class Categories {
   async findAll() {
     try {
-      const data = await categories.find();
+      console.log('a')
+      const data = await database.select(['id', 'name','slug'])
+        .table('categories');
+
       return {status:true, data};
+
     } catch (error) {
       console.log(error);
       return {status: false, data: []};
     }
   }
 
-  async insertData({ title, slug }) {
+  async findByProductId(ProductId) {
     try {
-      const newCategory = new categories({
-        title, slug
-      })
-      await newCategory.save()
+      const relationalBankSearch = await database
+        .select('*')
+        .where({ProductId})
+        .table('products_categories');
+
+      
+      let imageId = [];
+
+      if (relationalBankSearch.length > 1) {
+        for(let i = 0; i < relationalBankSearch.length; i++){
+          imageId.push(relationalBankSearch[i].categoryId)
+        }
+      } else if(relationalBankSearch.length === 1) {
+        imageId.push(relationalBankSearch[0].categoryId)
+      } else if (relationalBankSearch.length === 0) {
+        return {status: null, data: []}
+      }
+
+      const category = await Promise.all(
+        imageId.map(async item => {
+          return await database.select(['id', 'name', 'slug']).table('categories').where({id: item})
+        })
+      ) 
+
+      return {status: true, category}
+    } catch (error) {
+      console.log(error)
+      return {status: false, data: []}
+    }
+  }
+
+  async insertData(data) {
+    try {
+      await database.insert(data)
+        .table('categories');
 
       return {status: true, data: []};
     } catch (error) {
@@ -34,24 +62,16 @@ class Categories {
     }
   }
 
-  async deleteData(id) {
+  async updateData(id, { name, slug }) {
     try {
-      const result = await categories.findByIdAndDelete({'_id': id})
-      
-      if (result === null) return {status: null, data: []}
 
-      return {status: true, data: [] };
-    } catch (error) {
-      console.log(error);
-      return {status: false, data: []};
-    }
-  }
+      const response = await database.where({id})
+      .update({name,slug})
+      .table('categories');
 
-  async updateData(id, { title, slug }) {
-    try {
-      const response = await categories.findByIdAndUpdate(id, {title, slug})
-
-      if(response === null ) return {status: null, data: []}
+      if (response < 1) {
+        return {status: null, data: []}
+      }
 
       return {status: true, data:[]};
     } catch (error) {
@@ -60,7 +80,22 @@ class Categories {
     }
   }
 
+  async deleteData(id) {
+    try {
+      const response = await database.where({id})
+        .delete()
+        .table('categories');
 
+        if (response < 1) {
+          return {status: null, data: []}
+        }
+
+      return {status: true, data: [] };
+    } catch (error) {
+      console.log(error);
+      return {status: false, data: []};
+    }
+  }
 }
 
 module.exports = new Categories();

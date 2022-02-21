@@ -5,7 +5,6 @@ const slugify = require('slugify')
 /* Declarando pasta para arquivos temporários */
 const tmpFolder = path.resolve(__dirname, '..', 'tmp');
 
-
 /* Exportando configurações de Upload */
 module.exports = {
   directory: tmpFolder,
