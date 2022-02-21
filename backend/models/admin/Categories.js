@@ -5,7 +5,6 @@ const database = require("../../databases/connection");
 class Categories {
   async findAll() {
     try {
-      console.log('a')
       const data = await database.select(['id', 'name','slug'])
         .table('categories');
 
