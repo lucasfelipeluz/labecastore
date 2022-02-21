@@ -1,13 +1,13 @@
 /*  Método responsável por conectar ao Banco de dados
     MySQL. */
-const adminConnection = require('knex')({
+const database = require('knex')({
   client: 'mysql2',
   connection: {
-    host: '127.0.0.1',
+    host: 'localhost',
     user: 'root',
     password: 'lucas2012',
     database: 'labeca',
   },
 });
 
-module.exports = adminConnection;
+module.exports = database;

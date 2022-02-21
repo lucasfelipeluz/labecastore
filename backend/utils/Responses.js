@@ -23,11 +23,11 @@ class Response{
     })
   }
 
-  customInternalServerError(res, index) {
+  customInternalServerError(res, msg = 'Houve problemas no servidor') {
     res.status(501)
     res.json({
       data: [],
-      status: `Houve problemas no servidor no item ${index}`
+      status: msg
     })
   }
   
@@ -74,7 +74,7 @@ class Response{
   customBadRequest(res, msg, data = []) {
     res.status(400)
     res.json({
-      data: [],
+      data: data,
       status: msg
     })
   }
