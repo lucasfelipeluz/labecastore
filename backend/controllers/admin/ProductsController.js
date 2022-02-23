@@ -60,15 +60,20 @@ class ProductsController {
     Verificando se campos foram preenchidos.
     Inventory não é obrigatório
     */
-    if (title === undefined || title === null || title ==='') {
+    if(title === undefined || price === undefined || year === undefined) {
+      const msgError = "Title, price ou year podem não esta sendo enviado!";
+      Responses.badRequest(res, [] ,{msgError});
+      return;
+    }
+    if (title === null || title ==='') {
       Responses.customBadRequest(res, 'Tìtulo do produto é obrigatório');
       return;
     }
-    if (price === undefined || price === null || price ==='' || price === 0) {
+    if (price === null || price ==='' || price === 0) {
       Responses.customBadRequest(res, 'Preço do produto é obrigatório');
       return;
     }
-    if (year === undefined || year === null || year ==='' || year === '0') {
+    if (year === null || year ==='' || year === '0') {
       Responses.customBadRequest(res, 'Ano do produto é obrigatório');
       return;
     }
@@ -130,8 +135,7 @@ class ProductsController {
       return
     }
 
-    Responses.success(res)
-    res.json(responseUpdateDatabase);
+    Responses.success(res, responseUpdateDatabase.data);
   }
 }
 
