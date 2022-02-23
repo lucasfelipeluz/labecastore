@@ -10,11 +10,11 @@ const GetUrlImages = require('../../aws/GetUrlImages');
 class ProductsController {
 /* Retornará todos os Produtos */
   async index(req, res) {
-    const response = await Products.findAll();
+    const responseFindAllProducts = await Products.findAll();
 
     /* Verifica se o status da resposta é true, se for, retorna o Produtos */
-    if (response.status) {
-      Responses.success(res, response.data);
+    if (responseFindAllProducts.status) {
+      Responses.success(res, responseFindAllProducts.data);
       return;
     }
 
@@ -46,13 +46,13 @@ class ProductsController {
     }
     responseProducts.data.push(responseCategories.category)
 
-    Responses.success(res, responseProducts)
+    Responses.success(res, responseProducts.data)
   }
 
   /* Criação de Produtos */
   async create(req, res) {
     const { 
-      title, description, price, inventoryPP, inventoryP,
+      id, title, description, price, inventoryPP, inventoryP,
       inventoryM, inventoryG, inventoryGG, inventoryEG, inventoryEGG, year, 
       imageId, categoryId
     } = req.body;
@@ -73,12 +73,12 @@ class ProductsController {
       return;
     }
 
-    const dataForAdd= { title, description, price, inventoryPP, inventoryP,
+    const dataForAdd= { id, title, description, price, inventoryPP, inventoryP,
       inventoryM, inventoryG, inventoryGG, inventoryEG, inventoryEGG, year, 
       imageId, categoryId };
  
-    const responseDatabase = await Products.insertData(dataForAdd);
-    if (!responseDatabase.status){
+    const responseCreateProducts = await Products.insertData(dataForAdd);
+    if (!responseCreateProducts.status){
       Responses.customInternalServerError(res, "Erro no banco de dados.");
       return
     }
