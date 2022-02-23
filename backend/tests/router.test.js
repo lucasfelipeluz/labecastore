@@ -107,6 +107,36 @@ describe('Padrão de resposta de sucesso das rotas', () => {
   })
 })
 
+describe('Padrão de resposta de má requisição das rotas', () => {
+  describe('Admin', () => {
+    test('POST/admin/login', async () => {
+      const res = await request(app)
+        .post('/admin/login')
+        .send({nicknaame: "lucas", password: "lucas"})
+      
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toHaveProperty('data');
+      expect(res.body).toHaveProperty('info');
+    })  
+  })
+/* 
+  describe('Categorias', () => {
+    test('GET/admin/categories', async () => {
+      const res = await request(app)
+        .get('/admin/categories');
+  
+    
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body).toHaveProperty('info');
+    })
+  
+    test('POST/admin/categories', async () => {
+      const res = await request(app)
+        .post('/admin/categories')
+        .send({id: 4242, name:"Teste Teste Teste"});
+    
+    expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('data');
     expect(res.body).toHaveProperty('info');
     })
