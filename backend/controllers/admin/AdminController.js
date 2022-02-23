@@ -10,6 +10,11 @@ class Admin {
 
   async login(req, res) {
     const { nickname, password } = req.body;
+    if(nickname === undefined || password === undefined) {
+      const msgError = 'Nickname ou Password não estão sendo enviados!'      
+      Responses.badRequest(res, [], {msgError})
+      return;
+    }
     const response = await User.findByNickname(nickname);
 
     if (response.status) {
