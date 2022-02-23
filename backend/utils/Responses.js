@@ -8,11 +8,11 @@ class Response{
     })
   }
 
-  customSuccess(res, msg, data = []) {
-    res.status(200)
+  badRequest(res, data = {}, info = {}){
+    res.status(400)
     res.json({
       data,
-      status: msg
+      info
     })
   }
 
@@ -61,14 +61,6 @@ class Response{
     res.json({
       data,
       status: msg
-    })
-  }
-
-  badRequest(res) {
-    res.status(400)
-    res.json({
-      data: [],
-      status: 'Sintaxe Inválida'
     })
   }
 
