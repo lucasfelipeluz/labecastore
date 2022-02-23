@@ -119,24 +119,14 @@ describe('Padrão de resposta de má requisição das rotas', () => {
       expect(res.body).toHaveProperty('info');
     })  
   })
-/* 
+
   describe('Categorias', () => {
-    test('GET/admin/categories', async () => {
-      const res = await request(app)
-        .get('/admin/categories');
-  
-    
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('data');
-    expect(res.body).toHaveProperty('info');
-    })
-  
     test('POST/admin/categories', async () => {
       const res = await request(app)
         .post('/admin/categories')
-        .send({id: 4242, name:"Teste Teste Teste"});
+        .send({id: 4242, naame:"Teste Teste Teste"});
     
-    expect(res.statusCode).toEqual(200);
+    expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('data');
     expect(res.body).toHaveProperty('info');
     })
@@ -144,29 +134,19 @@ describe('Padrão de resposta de má requisição das rotas', () => {
     test('PUT/admin/categories/:id', async () => {
       const res = await request(app)
         .put('/admin/categories/4242')
-        .send({name: 'Testado Testado Testado'});
+        .send({naame: 'Testado Testado Testado'});
     
-    expect(res.statusCode).toEqual(200);
+    expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty('data');
     expect(res.body).toHaveProperty('info');
     })
 
-    test('DELETE/admin/categories/:id', async () => {
-      const res = await request(app)
-        .delete('/admin/categories/4242');
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('data');
-    expect(res.body).toHaveProperty('info');
-    })
-  })
-
-  describe('Produtos', () => {
+ /*  describe('Produtos', () => {
     test('GET/admin/products', async () => {
       const res = await request(app)
         .get('/admin/products');
     
-      expect(res.statusCode).toEqual(200);
+      expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('data');
       expect(res.body).toHaveProperty('info');
     })
@@ -178,7 +158,7 @@ describe('Padrão de resposta de má requisição das rotas', () => {
           inventoryP: 21, inventoryM: 21, inventoryG: 432, inventoryGG: 78, inventoryEG: 34,
           inventoryEGG: 312, year: "1999", categoryId: [9999], imageId: [9999]});
     
-      expect(res.statusCode).toEqual(200);
+      expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('data');
       expect(res.body).toHaveProperty('info');
     })
@@ -187,7 +167,7 @@ describe('Padrão de resposta de má requisição das rotas', () => {
       const res = await request(app)
         .get('/admin/products/details/9999');
       
-      expect(res.statusCode).toEqual(200);
+      expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('data');
       expect(res.body).toHaveProperty('info');
     })
@@ -196,10 +176,10 @@ describe('Padrão de resposta de má requisição das rotas', () => {
       const res = await request(app)
         .delete('/admin/products/9999');
       
-      expect(res.statusCode).toEqual(200);
+      expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('data');
       expect(res.body).toHaveProperty('info');
     })
-
-  }) */
+ */
+  }) 
 })

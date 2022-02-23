@@ -16,7 +16,13 @@ class CategoriesController {
   async create(req, res) {
     const { id, name } = req.body;
 
-    if (name === undefined || name === '' || name === null) {
+    if (name === undefined) {
+      const msgError = "Name não esta sendo enviado!";
+      Responses.badRequest(res, [] ,{msgError});
+      return;
+    }
+
+    if (name === '' || name === null) {
       Responses.customNotAcceptable(res, 'O nome da categoria é obrigatório.')
       return;
     }
@@ -40,7 +46,13 @@ class CategoriesController {
     const { name } = req.body;
     const { id } = req.params;
 
-    if (name === undefined || name === '' || name === null) {
+    if (name === undefined) {
+      const msgError = "Name não esta sendo enviado!";
+      Responses.badRequest(res, [], {msgError});
+      return;
+    }
+
+    if (name === '' || name === null) {
       Responses.customNotAcceptable(res, 'O nome da categoria é obrigatório.')
       return;
     }
