@@ -1,6 +1,8 @@
 const request = require('supertest');
+const database = require('../databases/connection');
 const User = require('../models/admin/Admin');
 const Categories = require('../models/admin/Categories');
+const Products = require('../models/admin/Products');
 
 const padraoDeRetornoSuccess = ['status','data']
 
@@ -15,6 +17,7 @@ describe('Padrão de resposta de sucesso dos Models', () => {
   })
 
   describe('Categories', () => {
+    const codTesteBancoDeDados = 828282;
     test('findAll', async () => {
       const responseModelProducts = await Categories.findAll();
       
@@ -23,21 +26,21 @@ describe('Padrão de resposta de sucesso dos Models', () => {
     })
 
     test('insertData', async () => {
-      const responseModelCategories = await Categories.insertData({id: 10000, name: 'Teste', slug: 'test'});
+      const responseModelCategories = await Categories.insertData({id: codTesteBancoDeDados, name: 'Teste', slug: 'test'});
       
       expect(responseModelCategories).toHaveProperty('status', true);
       expect(responseModelCategories).toHaveProperty('data');
     })
 
     test('updateData', async () => {
-      const responseModelCategories = await Categories.updateData(10000, {name: 'Testando', slug: 'testando'});
+      const responseModelCategories = await Categories.updateData(codTesteBancoDeDados, {name: 'Testando', slug: 'testando'});
       
       expect(responseModelCategories).toHaveProperty('status', true);
       expect(responseModelCategories).toHaveProperty('data');
     })
 
     test('deleteData', async () => {
-      const responseModelCategories = await Categories.deleteData(10000);
+      const responseModelCategories = await Categories.deleteData(codTesteBancoDeDados);
 
       expect(responseModelCategories).toHaveProperty('status', true);
       expect(responseModelCategories).toHaveProperty('data');
@@ -45,32 +48,49 @@ describe('Padrão de resposta de sucesso dos Models', () => {
   })
 
   describe('Products', () => {
+    const codTesteBancoDeDados = 919191;
     test('findAll', async () => {
-      const responseModelProducts = await Categories.findAll();
+      await database.insert({id: codTesteBancoDeDados, name: 'testing', slug: 'testing'})
+        .table('categories');
+      await database.insert({id: codTesteBancoDeDados, filename: 'teste', url: 'url'})
+        .table('images');
+
+      const responseModelProducts = await Products.findAll();
       
       expect(responseModelProducts).toHaveProperty('status', true);
       expect(responseModelProducts).toHaveProperty('data');
     })
 
     test('insertData', async () => {
-      const responseModelCategories = await Categories.insertData({id: 10000, name: 'Teste', slug: 'test'});
+      const responseModelProducts = await Products.insertData({id: codTesteBancoDeDados, title: "Timão I", 
+        description: "passira", price: 299.31, inventoryPP: 0, inventoryP: 0, inventoryM: 0, 
+        inventoryG: 0, inventoryGG: 0, inventoryEG: 0, inventoryEGG: 0, year: "2019", 
+        categoryId: [codTesteBancoDeDados], imageId: [codTesteBancoDeDados]});
       
-      expect(responseModelCategories).toHaveProperty('status', true);
-      expect(responseModelCategories).toHaveProperty('data');
+      expect(responseModelProducts).toHaveProperty('status', true);
+      expect(responseModelProducts).toHaveProperty('data');
     })
 
     test('updateData', async () => {
-      const responseModelCategories = await Categories.updateData(10000, {name: 'Testando', slug: 'testando'});
-      
-      expect(responseModelCategories).toHaveProperty('status', true);
-      expect(responseModelCategories).toHaveProperty('data');
+      const responseModelProducts = await Products.updateData(
+        codTesteBancoDeDados, 
+        { title: "Timão III", description: "ola", price: 99.31, inventoryPP: 0, inventoryP: 0,
+        inventoryM: 0, inventoryG: 0, inventoryGG: 0, inventoryEG: 0, inventoryEGG: 0, year: "2019" },
+        { categoryId: [codTesteBancoDeDados], imageId: [codTesteBancoDeDados] }
+      )
+        
+      expect(responseModelProducts).toHaveProperty('status', true);
+      expect(responseModelProducts).toHaveProperty('data');
     })
 
     test('deleteData', async () => {
-      const responseModelCategories = await Categories.deleteData(10000);
+      await database.delete().where({id: codTesteBancoDeDados}).table('categories');
+      await database.delete().where({id: codTesteBancoDeDados}).table('images');
 
-      expect(responseModelCategories).toHaveProperty('status', true);
-      expect(responseModelCategories).toHaveProperty('data');
+      const responseModelProducts = await Products.deleteData(codTesteBancoDeDados);
+
+      expect(responseModelProducts).toHaveProperty('status', true);
+      expect(responseModelProducts).toHaveProperty('data');
     })
   })
 })
