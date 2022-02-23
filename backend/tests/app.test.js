@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
+const database = require('../databases/connection');
 
 describe('Padrão de resposta de sucesso das rotas', () => {
   describe('Admin', () => {
@@ -24,6 +25,7 @@ describe('Padrão de resposta de sucesso das rotas', () => {
   })
 
   describe('Categorias', () => {
+    const codTesteBancoDeDados = 989898;
     test('GET/admin/categories', async () => {
       const res = await request(app)
         .get('/admin/categories');
@@ -37,7 +39,7 @@ describe('Padrão de resposta de sucesso das rotas', () => {
     test('POST/admin/categories', async () => {
       const res = await request(app)
         .post('/admin/categories')
-        .send({id: 4242, name:"Teste Teste Teste"});
+        .send({id: codTesteBancoDeDados, name:"Teste Teste Teste"});
     
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('data');
@@ -46,7 +48,7 @@ describe('Padrão de resposta de sucesso das rotas', () => {
 
     test('PUT/admin/categories/:id', async () => {
       const res = await request(app)
-        .put('/admin/categories/4242')
+        .put(`/admin/categories/${codTesteBancoDeDados}`)
         .send({name: 'Testado Testado Testado'});
     
     expect(res.statusCode).toEqual(200);
@@ -56,7 +58,7 @@ describe('Padrão de resposta de sucesso das rotas', () => {
 
     test('DELETE/admin/categories/:id', async () => {
       const res = await request(app)
-        .delete('/admin/categories/4242');
+        .delete(`/admin/categories/${codTesteBancoDeDados}`);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('data');
@@ -65,7 +67,14 @@ describe('Padrão de resposta de sucesso das rotas', () => {
   })
 
   describe('Produtos', () => {
+    const codTesteBancoDeDados = 797979;
+
     test('GET/admin/products', async () => {
+      await database.insert({id: codTesteBancoDeDados, name: 'testing', slug: 'testing'})
+        .table('categories');
+      await database.insert({id: codTesteBancoDeDados, filename: 'teste', url: 'url'})
+        .table('images');
+
       const res = await request(app)
         .get('/admin/products');
     
@@ -77,9 +86,10 @@ describe('Padrão de resposta de sucesso das rotas', () => {
     test('POST/admin/products', async () => {
       const res = await request(app)
         .post('/admin/products')
-        .send({id: 9999, title: "Teste Produtos", description: "teste", price: 999.91, inventoryPP: 31,
+        .send({id: codTesteBancoDeDados, title: "Teste Produtos", description: "teste", price: 999.91, inventoryPP: 31,
           inventoryP: 21, inventoryM: 21, inventoryG: 432, inventoryGG: 78, inventoryEG: 34,
-          inventoryEGG: 312, year: "1999", categoryId: [9999], imageId: [9999]});
+          inventoryEGG: 312, year: "1999", categoryId: [codTesteBancoDeDados], 
+          imageId: [codTesteBancoDeDados]});
     
       expect(res.statusCode).toEqual(200);
       expect(res.body).toHaveProperty('data');
@@ -88,7 +98,7 @@ describe('Padrão de resposta de sucesso das rotas', () => {
 
     test('GET/admin/products/details/:id', async () => {
       const res = await request(app)
-        .get('/admin/products/details/9999');
+        .get(`/admin/products/details/${codTesteBancoDeDados}`);
       
       expect(res.statusCode).toEqual(200);
       expect(res.body).toHaveProperty('data');
@@ -97,10 +107,11 @@ describe('Padrão de resposta de sucesso das rotas', () => {
 
     test('PUT/admin/products/:id', async () => {
       const res = await request(app)
-        .put('/admin/products/9999')
+        .put(`/admin/products/${codTesteBancoDeDados}}`)
         .send({title: "Testing", description: "dasdasdasd", price: 99.31, inventoryPP: 0,
           inventoryP: 0, inventoryM: 0, inventoryG: 0, inventoryGG: 0, inventoryEG: 0,
-          inventoryEGG: 0, year: "2019", categoryId: [9999], imageId: [9999]});
+          inventoryEGG: 0, year: "2019", categoryId: [codTesteBancoDeDados], 
+          imageId: [codTesteBancoDeDados]});
       
       expect(res.statusCode).toEqual(200);
       expect(res.body).toHaveProperty('data');
@@ -108,8 +119,11 @@ describe('Padrão de resposta de sucesso das rotas', () => {
     })
 
     test('DELETE/admin/products/:id', async () => {
+      await database.delete().where({id: codTesteBancoDeDados}).table('categories');
+      await database.delete().where({id: codTesteBancoDeDados}).table('images');
+
       const res = await request(app)
-        .delete('/admin/products/9999');
+        .delete(`/admin/products/${codTesteBancoDeDados}`);
       
       expect(res.statusCode).toEqual(200);
       expect(res.body).toHaveProperty('data');
