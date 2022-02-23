@@ -22,7 +22,6 @@ class Categories {
         .select('*')
         .where({ProductId})
         .table('products_categories');
-
       
       let imageId = [];
 
