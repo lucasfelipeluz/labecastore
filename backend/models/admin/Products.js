@@ -44,7 +44,7 @@ class Products {
   async insertData(data) {
     try {
       
-      const dataForAddInProductsTable = {title: data.title, year: data.year,
+      const dataForAddInProductsTable = {id: data.id, title: data.title, year: data.year,
         description: data.description, price: data.price, 
         inventoryPP: data.inventoryPP, inventoryP: data.inventoryP,
         inventoryM: data.inventoryM, inventoryG: data.inventoryM, 
@@ -59,10 +59,6 @@ class Products {
 
       if(data.imageId.length > 0){
         for (let imageId of data.imageId){
-          console.log({
-            imageId,
-            idProduct
-          })
           const responseDatabaseProducts_Images = await database
             .insert({productId: idProduct, imageId})
             .table('products_images')
@@ -75,10 +71,6 @@ class Products {
 
       if(data.categoryId.length > 0) {
         for (let categoryId of data.categoryId){
-          console.log({
-            categoryId,
-            idProduct
-          })
           const responseDatabaseProducts_Categories = await database
             .insert({productId: idProduct, categoryId})
             .table('products_categories')
