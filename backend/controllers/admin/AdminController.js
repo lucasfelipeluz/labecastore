@@ -10,30 +10,27 @@ class Admin {
 
   async login(req, res) {
     const { nickname, password } = req.body;
+
     if(nickname === undefined || password === undefined) {
       const msgError = 'Nickname ou Password não estão sendo enviados!'      
       Responses.badRequest(res, [], {msgError})
       return;
     }
-    const response = await User.findByNickname(nickname);
 
-    if (response.status) {
-      if (Object.keys(response.data).length >= 1) {
+    const responseFindByNicknameAdmin = await User.findByNickname(nickname);
 
-        if (response.data.password !== password) {
-          Responses.customUnauthenticated(res, 'Senha incorreta')
-          return
-        }
-
-        Responses.success(res, [], {status: 'Logado!'})
-        return
-        
-      } else {
-        Responses.customUnauthenticated(res, 'Usuário não encontrado')
-        return
-      }
+    if (responseFindByNicknameAdmin.status === null) {
+      const msgError = 'Usuário não encontrado!'
+      Responses.notAcceptable(res, [], {msgError});
+      return;
     }
-    Responses.internalServerError(res)
+
+    if (responseFindByNicknameAdmin.status === false) {
+      Responses.internalServerError(res);
+      return;
+    }
+
+    Responses.success(res, [], []);
   }
 }
 

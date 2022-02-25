@@ -1,10 +1,7 @@
-const request = require('supertest');
 const database = require('../databases/connection');
 const User = require('../models/admin/Admin');
 const Categories = require('../models/admin/Categories');
 const Products = require('../models/admin/Products');
-
-const padraoDeRetornoSuccess = ['status','data']
 
 describe('Padrão de resposta de sucesso dos Models', () => {
   describe('Admin', () => {
