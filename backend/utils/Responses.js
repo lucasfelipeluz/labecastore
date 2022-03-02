@@ -1,81 +1,56 @@
 /* Pré-sets de respostas de servidor que são mais usadas */
 class Response{
-  success(res, data = []) {
-    res.status(200)
+  /* Respostas de sucesso */
+  /* 200 - 226 */
+  success(res, data = {}, info = {}) {
+    res.status(200);
     res.json({
       data,
+      info
     })
   }
 
-  customSuccess(res, msg, data = []) {
-    res.status(200)
+  created(res, data = {}, info = {}) {
+    res.status(201);
     res.json({
       data,
-      status: msg
+      info
     })
   }
 
-  internalServerError(res) {
-    res.status(501)
+  /* Respostas de erro do cliente */
+  /* 400 - 451 */
+  badRequest(res, data = {}, info = {}){
+    res.status(400);
     res.json({
-      data: [],
-      status: 'Internal Server Error'
+      data,
+      info
     })
   }
 
-  customInternalServerError(res, msg = 'Houve problemas no servidor') {
-    res.status(501)
-    res.json({
-      data: [],
-      status: msg
-    })
-  }
-  
-  unauthenticated(res) {
-    res.status(401)
-    res.json({
-      data: [],
-      status: 'Não autorizado'
-    })
-  }
-
-  customUnauthenticated(res, msg, data = []) {
+  unauthenticated(res, data = {}, info = {}) {
     res.status(401)
     res.json({
       data,
-      status: msg
+      info,
     })
   }
 
-  notAcceptable(res) {
-    res.status(406)
-    res.json({
-      data: [],
-      status: 'Não autorizado'
-    })
-  }
-
-  customNotAcceptable(res, msg, data = []) {
+  notAcceptable(res, data = {}, info = {}) {
     res.status(406)
     res.json({
       data,
-      status: msg
+      info,
     })
   }
 
-  badRequest(res) {
-    res.status(400)
+  /* Respostas de erro do servidor */
+  /* 500 - 511 */
+  internalServerError(res, data = {}, info = {}) {
+    res.status(500)
     res.json({
-      data: [],
-      status: 'Sintaxe Inválida'
-    })
-  }
-
-  customBadRequest(res, msg, data = []) {
-    res.status(400)
-    res.json({
-      data: data,
-      status: msg
+      data,
+      info
     })
   }
 }

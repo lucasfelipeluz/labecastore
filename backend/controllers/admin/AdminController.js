@@ -4,35 +4,33 @@ const Responses = require('../../utils/Responses')
 /* Classe responsável pelo servições da rota Admin */
 class Admin {
   index(req, res) {
-    res.json({
-      links: {
-        login: '/login',
-        category: '/categories',
-        product: '/products',
-      },
-    });
+    const helpRoutes = ['/admin/login', '/admin/products', '/admin/categories']
+    Responses.success(res, [], {helpRoutes});
   }
 
   async login(req, res) {
     const { nickname, password } = req.body;
-    const response = await User.findByNickname(nickname);
 
-    if (response.status) {
-      if (Object.keys(response.data).length >= 1) {
-
-        if (response.data.password !== password) {
-          Responses.customUnauthenticated(res, 'Senha incorreta')
-          return
-        }
-
-        Responses.customSuccess(res, 'Logado!')
-        return
-      } else {
-        Responses.customUnauthenticated(res, 'Usuário não encontrado')
-        return
-      }
+    if(nickname === undefined || password === undefined) {
+      const msgError = 'Nickname ou Password não estão sendo enviados!'      
+      Responses.badRequest(res, [], {msgError})
+      return;
     }
-    Responses.internalServerError(res)
+
+    const responseFindByNicknameAdmin = await User.findByNickname(nickname);
+
+    if (responseFindByNicknameAdmin.status === null) {
+      const msgError = 'Usuário não encontrado!'
+      Responses.notAcceptable(res, [], {msgError});
+      return;
+    }
+
+    if (responseFindByNicknameAdmin.status === false) {
+      Responses.internalServerError(res);
+      return;
+    }
+
+    Responses.success(res, [], []);
   }
 }
 

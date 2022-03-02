@@ -5,7 +5,6 @@ const database = require("../../databases/connection");
 class Categories {
   async findAll() {
     try {
-      console.log('a')
       const data = await database.select(['id', 'name','slug'])
         .table('categories');
 
@@ -23,7 +22,6 @@ class Categories {
         .select('*')
         .where({ProductId})
         .table('products_categories');
-
       
       let imageId = [];
 
@@ -50,9 +48,9 @@ class Categories {
     }
   }
 
-  async insertData(data) {
+  async insertData({id = undefined, name, slug}) {
     try {
-      await database.insert(data)
+      await database.insert({id, name, slug})
         .table('categories');
 
       return {status: true, data: []};

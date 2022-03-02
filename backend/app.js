@@ -15,6 +15,7 @@ app.use('/', router);
 
 /* Iniciando Server */
 app.listen(80, (erro) => {
-  if (erro) console.log(`Ocorreu um erro ao conectar o server: \n${erro}`);
-  else console.log('Servidor rodando!')
+  if (erro) console.log('Erro ao iniciar o servidor!')
 });
+
+module.exports = app;

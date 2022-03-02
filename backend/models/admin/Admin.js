@@ -11,7 +11,7 @@ class User {
 
       if (Object.keys(data).length >= 1) {
         return {status: true, data: data[0]};    
-      } else return { status: true, data: []}
+      } else return { status: null, data: []}
       
     } catch (error) {
       console.log(error)
