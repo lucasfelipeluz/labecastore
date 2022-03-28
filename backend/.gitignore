@@ -1,4 +1,6 @@
 node_modules
 *.map
 .vscode
-.env
+**.env
+**.env.example
+
