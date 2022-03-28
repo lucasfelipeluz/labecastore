@@ -14,7 +14,7 @@ class User {
       } else return { status: null, data: []}
       
     } catch (error) {
-      console.log(error)
+      console.log(error.message);
       return { status: false, data: []}
     }
   }

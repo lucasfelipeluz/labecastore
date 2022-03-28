@@ -44,7 +44,7 @@ class ImagesController {
     checkResponses(res, responseCreateLinkAWS)
     checkResponses(res, responseDB)
 
-    Responses.customSuccess(res, 'Upload concluido')
+    Responses.success(res, 'Upload concluido')
   }
 
   /* Deleta a imagem na AWS e informações no BD segundo o ID*/

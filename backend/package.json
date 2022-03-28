@@ -4,8 +4,8 @@
   "description": "Loja Online de artigos esportivos",
   "main": "",
   "scripts": {
+    "start":"node app.js",
     "dev": "nodemon app",
-    "build": "node app",
     "test": "jest --detectOpenHandles"
   },
   "repository": {

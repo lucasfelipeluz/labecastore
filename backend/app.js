@@ -1,4 +1,4 @@
-/* Importando credencias da AWS S3 */
+/* Importando variáveis de ambiente */
 require('dotenv').config()
 
 const express = require('express');
@@ -14,8 +14,10 @@ app.use(express.json());
 app.use('/', router);
 
 /* Iniciando Server */
-app.listen(80, (erro) => {
+const port = process.env.PORT || 8989;
+app.listen(port, erro => {
   if (erro) console.log('Erro ao iniciar o servidor!')
+  else {console.log(`Server running in port: ${port}`)}
 });
 
 module.exports = app;
