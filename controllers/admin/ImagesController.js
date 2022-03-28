@@ -54,25 +54,25 @@ class ImagesController {
     const responseFilename = await Images.findFilenaById(id);
 
     if (responseFilename.status === null) {
-      Responses.customUnauthenticated(res, "Imagem não encontrada!");
+      Responses.unauthenticated(res, "Imagem não encontrada!");
       return
     }
 
     const deleteImage = new DeleteImage();
     const responseAWS = await deleteImage.execute(responseFilename.data);
     if(responseAWS.status === false) {
-      Responses.customInternalServerError(res, "Erro no servidor ao apagar a imagem");
+      Responses.internalServerError(res, "Erro no servidor ao apagar a imagem");
       return
     }
 
 
     const response = await Images.deleteData(id);
     if(response.status === null) {
-      Responses.customUnauthenticated(res, "Imagem não encontrada");
+      Responses.unauthenticated(res, "Imagem não encontrada");
       return
     }
 
-    Responses.customSuccess(res, 'Imagem apagada!', responseFilename.data)
+    Responses.success(res, 'Imagem apagada!', responseFilename.data)
     return
   }
 
