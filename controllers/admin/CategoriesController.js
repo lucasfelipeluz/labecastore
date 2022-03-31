@@ -25,12 +25,12 @@ class CategoriesController {
 
     if (name === undefined) {
       const msgError = "Name não esta sendo enviado!";
-      Responses.badRequest(res, [] ,{msgError});
+      Responses.badRequest(res, {} , {}, msgError);
       return;
     }
 
     if (name === '' || name === null) {
-      Responses.customNotAcceptable(res, 'O nome da categoria é obrigatório.')
+      Responses.notAcceptable(res, {}, {}, 'O nome da categoria é obrigatório.')
       return;
     }
 
@@ -43,7 +43,7 @@ class CategoriesController {
     const responseCreateCategory = await Categories.insertData(data);
 
     if (responseCreateCategory.status) {
-      Responses.success(res, responseCreateCategory.data)
+      Responses.created(res, responseCreateCategory.data)
       return
     }
     Responses.internalServerError(res)
@@ -53,14 +53,14 @@ class CategoriesController {
     const { name } = req.body;
     const { id } = req.params;
 
-    if (name === undefined) {
-      const msgError = "Name não esta sendo enviado!";
-      Responses.badRequest(res, [], {msgError});
+    if (name === undefined || id === undefined) {
+      const msgError = "Name ou Id não estão sendo enviados!";
+      Responses.badRequest(res, {}, {}, msgError);
       return;
     }
 
     if (name === '' || name === null) {
-      Responses.customNotAcceptable(res, 'O nome da categoria é obrigatório.')
+      Responses.notAcceptable(res, {}, {}, 'O nome da categoria é obrigatório.')
       return;
     }
 
@@ -77,7 +77,7 @@ class CategoriesController {
     }
 
     if (responseUpdateData.status === null) {
-      Responses.customUnauthenticated(res, 'Categoria não encontrada')
+      Responses.unauthenticated(res, {}, {}, 'Categoria não encontrada')
       return
     }
 
@@ -95,7 +95,7 @@ class CategoriesController {
     }
 
     if (response.status === null) {
-      Responses.customUnauthenticated(res, 'Categoria não encontrada')
+      Responses.unauthenticated(res, {}, {}, 'Categoria não encontrada')
       return
     }
 
