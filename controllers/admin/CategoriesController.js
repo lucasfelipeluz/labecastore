@@ -6,8 +6,15 @@ const Responses = require('../../utils/Responses')
 class CategoriesController {
   async index(req, res) {
     const responseFindAllCategories = await Categories.findAll()
+
+    const helpRoutes = [
+      'POST/admin/categories',
+      'PUT/admin/categories/:id', 
+      'DEL/admin/categories/:id'
+    ]
+
     if (responseFindAllCategories.status) {
-      Responses.success(res, responseFindAllCategories.data)
+      Responses.success(res, responseFindAllCategories.data, {helpRoutes})
       return
     }
     Responses.internalServerError(res)
