@@ -11,16 +11,13 @@
 <h4 align="center"><a href="https://github.com/lucasfelipeluz/labecastore/">Clique para ir ao projeto</a></h4>
 
 ## 📖 Seções
-O projeto é composto pelo Back End e Front End. Cada um tem readme que explica como funciona cada coisa e o que retorna.
+O projeto é composto pelo Back End e Front End. Nesse repositória só terá o backend, em breve colocarei o link para o frontend.
 
 ---
 
 ## 🔧 Tecnologias utilizadas
 Para o desenvolvimento deste projeto utilizo e vou utilizar as seguintes tecnologias e bibliotecas:
 
-- Front-End:<br>
-Angular, Knex, Bootstrap, Sass, HTML e CSS.
-- Back-End: <br>
 Node.js, Express, SDK da AWS S3, Multer, Mime e Slugify.
 -Banco de Dados:
 SQL e MongoDB.

@@ -9,7 +9,7 @@ const uploadConfig = require('../config/upload');
 class S3Storage {
   constructor() {
     this.client = new aws.S3({
-      region: 'us-east-1'
+      region: process.env.aws_region
     });
 
   }
@@ -28,7 +28,7 @@ class S3Storage {
 
     try {
       this.client.putObject({
-        Bucket: 'labeca',
+        Bucket: process.env.aws_bucket_name,
         Key: filename,
         Body: fileContent,
       }).promise()
@@ -47,7 +47,7 @@ class S3Storage {
   /* Deletar Arquivo no Bucket */
   async deleteFile(filename) {
     const params = {
-      Bucket: 'labeca',
+      Bucket: process.env.aws_bucket_name,
       Key: filename
     }
   try {
@@ -67,7 +67,7 @@ class S3Storage {
   async getUrl(filename) {
   try {
     const data = this.client.getSignedUrl('getObject', {
-      Bucket: 'labeca',
+      Bucket: process.env.aws_bucket_name,
       Key: filename
     })
 
