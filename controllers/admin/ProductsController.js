@@ -13,8 +13,14 @@ class ProductsController {
     const responseFindAllProducts = await Products.findAll();
 
     /* Verifica se o status da resposta é true, se for, retorna o Produtos */
+    const helpRoutes = [
+      'GET/admin/products/details/:id',
+      'POST/admin/products',
+      'PUT/admin/products/:id',
+      'DELETE/admin/products/:id',
+    ]
     if (responseFindAllProducts.status) {
-      Responses.success(res, responseFindAllProducts.data);
+      Responses.success(res, responseFindAllProducts.data, {helpRoutes});
       return;
     }
 
@@ -28,25 +34,29 @@ class ProductsController {
 
     const responseProducts = await Products.findById(id)
     if (responseProducts.status === null) {
-      Responses.customUnauthenticated(res, "Produto não encontrado!");
+      Responses.unauthenticated(res, [], {}, "Produto não encontrado!");
       return
     }
 
     const responseImages = await Images.findByProductId(id);
     if(responseImages.status === null) {
-      Responses.customInternalServerError(res,"Erro de incompatibilidade de dados")
+      Responses.internalServerError(res, [], {}, "Erro de incompatibilidade de dados com as Imagens")
       return
     }
-    responseProducts.data.push(responseImages.images)
 
     const responseCategories = await Categories.findByProductId(id);
     if(responseCategories.status === null) {
-      Responses.customInternalServerError(res,"Erro de incompatibilidade de dados")
+      Responses.internalServerError(res, [], {}, "Erro de incompatibilidade de dados com as Categorias")
       return
     }
-    responseProducts.data.push(responseCategories.category)
 
-    Responses.success(res, responseProducts.data)
+    const response = {
+      Product: responseProducts.data,
+      Categories: responseCategories.category,
+      Images: responseImages.images
+    }
+
+    Responses.success(res, response)
   }
 
   /* Criação de Produtos */
@@ -61,20 +71,20 @@ class ProductsController {
     Inventory não é obrigatório
     */
     if(title === undefined || price === undefined || year === undefined) {
-      const msgError = "Title, price ou year podem não esta sendo enviado!";
-      Responses.badRequest(res, [] ,{msgError});
+      const msgError = "Title, price ou year podem não esta sendo enviados!";
+      Responses.badRequest(res, [] ,{}, msgError);
       return;
     }
     if (title === null || title ==='') {
-      Responses.customBadRequest(res, 'Tìtulo do produto é obrigatório');
+      Responses.badRequest(res, [], {}, 'Tìtulo do produto é obrigatório');
       return;
     }
     if (price === null || price ==='' || price === 0) {
-      Responses.customBadRequest(res, 'Preço do produto é obrigatório');
+      Responses.badRequest(res, [], {}, 'Preço do produto é obrigatório');
       return;
     }
     if (year === null || year ==='' || year === '0') {
-      Responses.customBadRequest(res, 'Ano do produto é obrigatório');
+      Responses.badRequest(res, [], {}, 'Ano do produto é obrigatório');
       return;
     }
 
@@ -84,11 +94,11 @@ class ProductsController {
  
     const responseCreateProducts = await Products.insertData(dataForAdd);
     if (!responseCreateProducts.status){
-      Responses.customInternalServerError(res, "Erro no banco de dados.");
+      Responses.internalServerError(res, [], {}, "Erro no banco de dados.");
       return
     }
     
-    Responses.success(res)
+    Responses.success(res, [])
     return    
   }
 
@@ -100,23 +110,23 @@ class ProductsController {
     const responseDeleteDatabase = await Products.deleteData(id);
 
     if(responseDeleteDatabase.status === null){
-      Responses.customUnauthenticated(res, "Produto não encontrado");
+      Responses.unauthenticated(res, [], {}, "Produto não encontrado");
       return
     }
     if(responseDeleteDatabase.status === false){
-      Responses.customInternalServerError(res, "Erro a apagar o produto");
+      Responses.internalServerError(res, [], {}, "Erro a apagar o produto");
       return
     }
 
-    Responses.success(res)
+    Responses.success(res, [])
   }
 
   /* Atualizando Produtos */
   async update(req, res) {
     const { 
       title, description, price, inventoryPP, inventoryP,
-      inventoryM, inventoryG, inventoryGG, inventoryEG, inventoryEGG, year, 
-      imageId, categoryId
+      inventoryM, inventoryG, inventoryGG, inventoryEG,
+      inventoryEGG, year, imageId, categoryId
     } = req.body;
     let { id } = req.params;
     id = parseInt(id);
@@ -127,11 +137,11 @@ class ProductsController {
 
     const responseUpdateDatabase = await Products.updateData(id, dataToUpdating, dataToUpdatingForRelationTables);
     if(responseUpdateDatabase.status === null){
-      Responses.customUnauthenticated(res, "Produto não encontrado");
+      Responses.unauthenticated(res, [], {},  "Produto não encontrado");
       return
     }
     if(responseUpdateDatabase.status === false){
-      Responses.customInternalServerError(res, "Erro a atualizar o produto");
+      Responses.internalServerError(res, [], {}, "Erro a atualizar o produto");
       return
     }
 
