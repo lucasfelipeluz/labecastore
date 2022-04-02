@@ -11,10 +11,15 @@ class ImagesController {
   /* Retorna todas as imagens na nuvem */
   async index(req, res) {
     /* Retornar todas as imagens no BD */
+    const helpRoutes = [
+      'POST/admin/images', 
+      'DEL/admin/images/:id'
+    ]
+
     const response = await Images.findAll();
 
     if (response.status) {
-      Responses.success(res, response.data)
+      Responses.success(res, response.data, { helpRoutes });
       return 
     }
     Responses.internalServerError(res)

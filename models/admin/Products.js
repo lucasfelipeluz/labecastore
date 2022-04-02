@@ -44,7 +44,8 @@ class Products {
   async insertData(data) {
     try {
       
-      const dataForAddInProductsTable = {id: data.id, title: data.title, year: data.year,
+      const dataForAddInProductsTable = {
+        id: data.id, title: data.title, year: data.year,
         description: data.description, price: data.price, 
         inventoryPP: data.inventoryPP, inventoryP: data.inventoryP,
         inventoryM: data.inventoryM, inventoryG: data.inventoryM, 
@@ -62,7 +63,7 @@ class Products {
           const responseDatabaseProducts_Images = await database
             .insert({productId: idProduct, imageId})
             .table('products_images')
-
+          
           if(responseDatabaseProducts_Images.length < 1){
             throw new Error("Error ao adicionar dados do relacionamento.")
           }
@@ -74,7 +75,7 @@ class Products {
           const responseDatabaseProducts_Categories = await database
             .insert({productId: idProduct, categoryId})
             .table('products_categories')
-
+          
           if(responseDatabaseProducts_Categories.length < 1){
             throw new Error("Error ao adicionar dados do relacionamento.")
           }

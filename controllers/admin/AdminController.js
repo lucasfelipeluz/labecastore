@@ -6,7 +6,7 @@ class Admin {
   index(req, res) {
     const helpRoutes = ['/admin/login', '/admin/products', '/admin/categories', '/admin/images']
 
-    Responses.success(res, {}, {helpRoutes});
+    Responses.success(res, [], {helpRoutes});
     return;
   }
 
@@ -15,7 +15,7 @@ class Admin {
 
     if(nickname === undefined || password === undefined) {
       const msgError = 'Nickname ou Password não estão sendo enviados!'      
-      Responses.badRequest(res, {}, {}, msgError)
+      Responses.badRequest(res, [], {}, msgError)
       return;
     }
 
@@ -23,7 +23,7 @@ class Admin {
 
     if (responseFindByNicknameAdmin.status === null) {
       const msgError = 'Nickname não encontrada!'
-      Responses.notAcceptable(res, {}, {}, msgError);
+      Responses.notAcceptable(res, [], {}, msgError);
       return;
     }
 
