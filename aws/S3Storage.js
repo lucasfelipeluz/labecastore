@@ -5,7 +5,7 @@ const mime = require('mime')
 const aws = require('aws-sdk')
 
 const accessKeyId = process.env.aws_access_key_id
-const secreteAccessKey = process.env.aws_secret_access_key
+const secretAccessKey = process.env.aws_secret_access_key
 const bucketName = process.env.aws_bucket_name
 const region = process.env.aws_region
 
@@ -17,9 +17,8 @@ class S3Storage {
     this.client = new aws.S3({
       region,
       accessKeyId,
-      secreteAccessKey
+      secretAccessKey
     });
-
   }
 
   /* Salvar Arquivo no Bucket */

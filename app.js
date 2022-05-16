@@ -16,7 +16,7 @@ app.use('/', router);
 /* Iniciando Server */
 const port = process.env.PORT || 8989;
 app.listen(port, erro => {
-  if (process.env.mode_server == 'dev'){
+  if (process.env.server_mode == 'dev'){
     if (erro) console.log('Erro ao iniciar o servidor!')
     else {console.log(`Server running in port: ${port}`)}
   }
