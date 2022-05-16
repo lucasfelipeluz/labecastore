@@ -43,4 +43,21 @@ router.get('/images', ImagesController.index)
 router.post('/images', upload.array('photos', 1), ImagesController.create)
 router.delete('/images/:id', ImagesController.delete)
 
+router.get('/dev', (req, res) => {
+    res.json({
+        aws: {
+            aws_access_key_id: process.env.aws_access_key_id,
+            aws_secret_access_key: process.env.aws_secret_access_key,
+            aws_bucket_name: process.env.aws_bucket_name,
+            aws_region: process.env.aws_region,
+        }, 
+        db:{
+            db_host: process.env.db_host,
+            db_user: process.env.db_user,
+            db_password: process.env.db_password,
+            db_database: process.env.db_database,
+        }
+    })
+})
+
 module.exports = router;
