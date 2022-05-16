@@ -43,7 +43,7 @@ router.get('/images', ImagesController.index)
 router.post('/images', upload.array('photos', 1), ImagesController.create)
 router.delete('/images/:id', ImagesController.delete)
 
-router.get('/dev', (req, res) => {
+router.get('/debug', (req, res) => {
     res.json({
         aws: {
             aws_access_key_id: process.env.aws_access_key_id,
