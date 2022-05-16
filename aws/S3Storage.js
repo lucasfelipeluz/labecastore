@@ -1,7 +1,13 @@
+require('dotenv').config()
 const path = require('path')
 const fs = require('fs')
 const mime = require('mime')
 const aws = require('aws-sdk')
+
+const accessKeyId = process.env.aws_access_key_id
+const secreteAccessKey = process.env.aws_secret_access_key
+const bucketName = process.env.aws_bucket_name
+const region = process.env.aws_region
 
 const uploadConfig = require('../config/upload');
 
@@ -9,7 +15,9 @@ const uploadConfig = require('../config/upload');
 class S3Storage {
   constructor() {
     this.client = new aws.S3({
-      region: process.env.aws_region
+      region,
+      accessKeyId,
+      secreteAccessKey
     });
 
   }
@@ -28,7 +36,7 @@ class S3Storage {
 
     try {
       this.client.putObject({
-        Bucket: process.env.aws_bucket_name,
+        Bucket: bucketName,
         Key: filename,
         Body: fileContent,
       }).promise()
@@ -47,7 +55,7 @@ class S3Storage {
   /* Deletar Arquivo no Bucket */
   async deleteFile(filename) {
     const params = {
-      Bucket: process.env.aws_bucket_name,
+      Bucket: bucketName,
       Key: filename
     }
   try {
@@ -67,7 +75,7 @@ class S3Storage {
   async getUrl(filename) {
   try {
     const data = this.client.getSignedUrl('getObject', {
-      Bucket: process.env.aws_bucket_name,
+      Bucket: bucketName,
       Key: filename
     })
 

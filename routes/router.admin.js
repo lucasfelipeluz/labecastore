@@ -56,7 +56,8 @@ router.get('/debug', (req, res) => {
             db_user: process.env.db_user,
             db_password: process.env.db_password,
             db_database: process.env.db_database,
-        }
+        },
+        env: process.env
     })
 })
 
