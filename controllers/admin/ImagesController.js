@@ -1,9 +1,7 @@
 const Responses = require('../../utils/Responses')
 const Images = require('../../models/admin/Images')
 
-const UploadImages = require('../../aws/UploadImages')
-const GetUrlImages = require('../../aws/GetUrlImages')
-const DeleteImage = require('../../aws/DeleteImage')
+const S3Storage = require('../../services/aws/S3Storage')
 
 /*  Classe responsável por upload, deleção e atualização de Images e informações
     admin/images */
@@ -32,17 +30,14 @@ class ImagesController {
       if (response.status) {
         return
       }
-      Responses.customInternalServerError(res)
+      Responses.internalServerError(res)
     }
 
     const { files } = req;
     const nomeDoArquivo = files[0].filename;
 
-    const uploadImages = new UploadImages();
-    const getUrlImages = new GetUrlImages();
-
-    const responseUploadAWS = await uploadImages.execute(nomeDoArquivo);
-    const responseCreateLinkAWS = await getUrlImages.execute(nomeDoArquivo);
+    const responseUploadAWS = await S3Storage.saveFile(nomeDoArquivo)
+    const responseCreateLinkAWS = await S3Storage.GetUrl(nomeDoArquivo)
     const responseDB = await Images.insertData(nomeDoArquivo, responseCreateLinkAWS.data)
 
     checkResponses(res, responseUploadAWS)
@@ -63,8 +58,7 @@ class ImagesController {
       return
     }
 
-    const deleteImage = new DeleteImage();
-    const responseAWS = await deleteImage.execute(responseFilename.data);
+    const responseAWS = await S3Storage.deleteFile(responseFilename.data)
     if(responseAWS.status === false) {
       Responses.internalServerError(res, {}, {}, "Erro no servidor ao apagar a imagem");
       return
