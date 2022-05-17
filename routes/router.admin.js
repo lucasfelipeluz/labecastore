@@ -8,40 +8,41 @@ const uploadConfig = require('../config/upload')
 const AdminController = require('../controllers/admin/AdminController');
 const ProductsController = require('../controllers/admin/ProductsController');
 const CategoriesController = require('../controllers/admin/CategoriesController');
-const ImagesController = require('../controllers/admin/ImagesController')
+const ImagesController = require('../controllers/admin/ImagesController');
+
+const AdminAuth = require('../middleware/AdminAuth')
 
 const router = express.Router();
 
 /* Configurando e usando o Multer */
 const upload = multer(uploadConfig)
 
-/*  Login e inscrição
-    Não precisam de credencias de Administrador */
+// Login Admin
 router.post('/login', AdminController.login)
-
-/* Página Inicial de Administrador */
-router.get('/', AdminController.index);
+router.post('/create', AdminController.create)
+router.put('/changepassword', AdminAuth, AdminController.update)
+router.delete('/delete', AdminController.remove)
 
 /*  Products
     Precisa de credenciais de Administrador */
-router.get('/products', ProductsController.index);
-router.get('/products/details/:id', ProductsController.details);
-router.post('/products', ProductsController.create);
-router.put('/products/:id', ProductsController.update);
-router.delete('/products/:id', ProductsController.delete);
+router.get('/products', AdminAuth, ProductsController.index);
+router.get('/products/details/:id', AdminAuth, ProductsController.details);
+router.post('/products', AdminAuth, ProductsController.create);
+router.put('/products/:id', AdminAuth, ProductsController.update);
+router.delete('/products/:id', AdminAuth, ProductsController.delete);
 
 /*  Categories
     Precisa de credenciais de Administrador */
-router.get('/categories', CategoriesController.index);
-router.post('/categories', CategoriesController.create);
-router.put('/categories/:id', CategoriesController.update);
-router.delete('/categories/:id', CategoriesController.delete); 
+router.get('/categories', AdminAuth, CategoriesController.index);
+router.post('/categories', AdminAuth, CategoriesController.create);
+router.put('/categories/:id', AdminAuth, CategoriesController.update);
+router.delete('/categories/:id', AdminAuth, CategoriesController.delete); 
 
 /*  Images
     Precisa de crendeciais de Administrador */
-router.get('/images', ImagesController.index)
-router.post('/images', upload.array('photos', 1), ImagesController.create)
-router.delete('/images/:id', ImagesController.delete)
+router.get('/images', AdminAuth, ImagesController.index)
+router.post('/images', AdminAuth, upload.array('photos', 1), ImagesController.create)
+router.delete('/images/:id', AdminAuth, ImagesController.delete)
 
 
 
