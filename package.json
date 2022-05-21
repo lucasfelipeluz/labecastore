@@ -1,8 +1,8 @@
 {
   "name": "labecastore",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Loja Online de artigos esportivos",
-  "main": "",
+  "main": "app.js",
   "engines": {
     "node": "16.14.0",
     "npm": "8.3.1"
