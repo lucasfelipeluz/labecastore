@@ -6,7 +6,7 @@ const secretKey = process.env.secret_key;
 module.exports = (req, res, next) => {
   const authToken = req.headers['authorization']
 
-  if (process.env.authStatus === true){
+  if (process.env.authStatus === 'true'){
     if (authToken != undefined) {
   
       const decodificado = jwt.verify(authToken, secretKey)
