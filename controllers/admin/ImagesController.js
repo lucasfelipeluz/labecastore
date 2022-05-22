@@ -34,6 +34,9 @@ class ImagesController {
     }
 
     const { files } = req;
+    if (files === undefined || files === null) return Responses.badRequest(res, [], {}, 'Nenhum arquivo está sendo enviado!')
+    if (files.length < 1) return Responses.badRequest(res, [], {}, 'Nenhum arquivo está sendo enviado!')
+
     const nomeDoArquivo = files[0].filename;
 
     const responseUploadAWS = await S3Storage.saveFile(nomeDoArquivo)
