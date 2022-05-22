@@ -71,7 +71,7 @@ class ImagesController {
       return
     }
 
-    Responses.success(res, responseFilename.data)
+    Responses.success(res, [], `${responseFilename.data} foi apagado!`)
     return
   }
 
