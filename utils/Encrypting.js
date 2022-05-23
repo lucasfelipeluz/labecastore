@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 
 class Encrypting {
   constructor() {
-    this.keySecret = process.env.code_hash
-    this.salt = parseInt(process.env.salt_hash)
+    this.keySecret = process.env.code_hash || 'test';
+    this.salt = parseInt(process.env.salt_hash || 42)
   }
 
   async textToHash(texto) {

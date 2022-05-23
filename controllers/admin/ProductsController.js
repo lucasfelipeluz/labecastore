@@ -3,7 +3,6 @@ const Responses = require('../../utils/Responses');
 const Images = require('../../models/admin/Images');
 const Categories = require('../../models/admin/Categories');
 
-
 /* Classe responsável pelo servições da rota admin/products */
 class ProductsController {
 /* Retornará todos os Produtos */
@@ -17,6 +16,9 @@ class ProductsController {
       'PUT/admin/products/:id',
       'DELETE/admin/products/:id',
     ]
+    if (responseFindAllProducts.status === null) {
+      return Responses.noContent(res)
+    }
     if (responseFindAllProducts.status) {
       Responses.success(res, responseFindAllProducts.data, {helpRoutes});
       return;
