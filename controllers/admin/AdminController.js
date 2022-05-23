@@ -8,7 +8,7 @@ const secretKey = process.env.secret_key;
 /* Classe responsável pelo servições da rota Admin */
 class Admin {
   async create(req, res) {
-    const { name, nickname, password } = req.body;
+    const { name, nickname, password, role } = req.body;
 
     if (!name || !nickname || !password) {
       return Responses.badRequest(res, [], {}, 'Certifique-se que está passando o nome, nickname e senha');
@@ -22,10 +22,10 @@ class Admin {
 
     const hashPassword = await Encrypting.textToHash(password);
 
-    const responseAddUser = await User.insertData(name, nickname, hashPassword);
+    const responseAddUser = await User.insertData(name, nickname, hashPassword, role);
     if (responseAddUser === false) return Responses.internalServerError(res);
     
-    Responses.success(res)
+    Responses.success(res, [], 'Agora efetue o login.')
   }
 
   async login(req, res) {
@@ -56,39 +56,48 @@ class Admin {
   }
 
   async update(req, res) {
-    const { nickname, oldPassword, newPassword } = req.body;
+    return Responses.serviceUnavailable(res, [], {}, 'Rota em manutenção!')
 
-    if (!nickname || !oldPassword || !newPassword){
-      return Responses.badRequest(res, [], {}, 'Certifique-se que está a antiga senha e a nova senha');
-    }
 
-    const { status, data} = await User.findByNickname(nickname);
-    if (status === null) {
-      return Responses.notAcceptable(res, [], {}, 'Usuário não existe');
-    }
+    // const { nickname, oldPassword, newPassword } = req.body;
 
-    const comparePasswords = await Encrypting.comparing(data.password, oldPassword);
-    if (comparePasswords === false) return Responses.unauthenticated(res, [], {}, 'A Senha antiga não é válida!')
+    // if (!nickname || !oldPassword || !newPassword){
+    //   return Responses.badRequest(res, [], {}, 'Certifique-se que está a antiga senha e a nova senha');
+    // }
 
-    const password = await Encrypting.textToHash(newPassword);
+    // const { status, data} = await User.findByNickname(nickname);
+    // if (status === null) {
+    //   return Responses.notAcceptable(res, [], {}, 'Usuário não existe');
+    // }
 
-    const responseUpdatePassword = await User.updatePassword(nickname, password);
-    if (responseUpdatePassword === false ) return Responses.internalServerError(res)
+    // const comparePasswords = await Encrypting.comparing(data.password, oldPassword);
+    // if (comparePasswords === false) return Responses.unauthenticated(res, [], {}, 'A Senha antiga não é válida!')
 
-    return Responses.success(res);
+    // const password = await Encrypting.textToHash(newPassword);
+
+    // const responseUpdatePassword = await User.updatePassword(nickname, password);
+    // if (responseUpdatePassword === false ) return Responses.internalServerError(res)
+
+    // return Responses.success(res);
   }
 
   async remove(req, res) {
-    const { nickname } = req.body;
-
-    if (!nickname){
-      return Responses.badRequest(res, [], {}, 'Que passou o nickname');
+    
+    if (req.query['nickname']) {
+      const { nickname } = req.query
+      
+      const responseFindUser = await User.findByNickname(nickname)
+      if (responseFindUser.status === null) return Responses.notAcceptable(res, [], {}, 'Usuário não encontrado!')
+      if (responseFindUser.status === false) return Responses.internalServerError(res, [], {}, 'Erro ao buscar dados no banco!')
+      
+      const responseRemoveUser = await User.removeUser(nickname)
+      if (responseRemoveUser.status === false) return Responses.internalServerError(res, [], {}, 'Erro ao buscar dados no banco!')
+      
+      return Responses.success(res, [], 'Usuário deletado!')
     }
-
-    const { status } = await User.removeUser(nickname);
-    if (status === false) return Responses.internalServerError(res)
-
-    return Responses.success(res);
+    else {
+      return Responses.badRequest(res, [], {}, 'Usuário não foi passado!')
+    }
   }
 }
 

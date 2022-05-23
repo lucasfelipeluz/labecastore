@@ -19,9 +19,9 @@ const upload = multer(uploadConfig)
 
 // Login Admin
 router.post('/login', AdminController.login)
-router.post('/create', AdminController.create)
+router.post('/create', AdminAuth, AdminController.create)
 router.put('/changepassword', AdminAuth, AdminController.update)
-router.delete('/delete', AdminController.remove)
+router.delete('/delete', AdminAuth, AdminController.remove)
 
 /*  Products
     Precisa de credenciais de Administrador */
@@ -43,7 +43,6 @@ router.delete('/categories/:id', AdminAuth, CategoriesController.delete);
 router.get('/images', AdminAuth, ImagesController.index)
 router.post('/images', AdminAuth, upload.array('photos', 1), ImagesController.create)
 router.delete('/images/:id', AdminAuth, ImagesController.delete)
-
 
 
 module.exports = router;
