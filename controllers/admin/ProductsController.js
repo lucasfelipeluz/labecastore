@@ -38,25 +38,7 @@ class ProductsController {
       return
     }
 
-    const responseImages = await Images.findByProductId(id);
-    if(responseImages.status === null) {
-      Responses.internalServerError(res, [], {}, "Erro de incompatibilidade de dados com as Imagens")
-      return
-    }
-
-    const responseCategories = await Categories.findByProductId(id);
-    if(responseCategories.status === null) {
-      Responses.internalServerError(res, [], {}, "Erro de incompatibilidade de dados com as Categorias")
-      return
-    }
-
-    const response = {
-      Product: responseProducts.data,
-      Categories: responseCategories.category,
-      Images: responseImages.images
-    }
-
-    Responses.success(res, response)
+    Responses.success(res, responseProducts.data)
   }
 
   /* Criação de Produtos */
