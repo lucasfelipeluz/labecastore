@@ -44,5 +44,4 @@ router.get('/images', AdminAuth, ImagesController.index)
 router.post('/images', AdminAuth, upload.array('photos', 1), ImagesController.create)
 router.delete('/images/:id', AdminAuth, ImagesController.delete)
 
-
 module.exports = router;
