@@ -1,14 +1,70 @@
-const { type } = require('express/lib/response');
 const database = require('../../databases/connection');
 
-/* Classes responsável por criação de requisição
-    para o banco de dados MongoDB */
 class Products {
-  // Buscará todos os Produtos
+  
   async findAll() {
     try {
       const productsPure = await database.select(['*']).table('products')
       const products = []
+
+      for(let product of productsPure) {
+
+        // Category
+        const products_categories = Object.values(
+          await database.select(['*']).table('products_categories').where({productId: product.id })
+        )
+
+        const categoryId =  products_categories.map( item => {
+          return item.categoryId
+        })
+
+        const category = []
+        for (let item of categoryId){
+          const arrayCategory = await database.table('categories').where({id: item}).select('id as CategoryId', 'name as NomeCategoria', 'slug as SlugCategoria')
+          category.push(arrayCategory[0])
+        }
+
+        // Images
+        const products_images = Object.values(
+          await database.select(['*']).table('products_images').where({productId: product.id })
+        )
+
+        const imageId =  products_images.map( item => {
+          return item.imageId
+        })
+
+        const image = []
+        for (let item of imageId){
+          const arrayImage = await database.table('images').where({id: item}).select('id as ImageId', 'filename', 'url')
+          image.push(arrayImage[0])
+        }
+
+        const newProduct = {
+          id: product.id, title: product.title, description: product.description, price: product.price, year: product.year, 
+          inventoryPP: product.inventoryPP, inventoryP: product.inventoryP, inventoryM: product.inventoryM, 
+          inventoryG: product.inventoryG, inventoryGG: product.inventoryGG, 
+          inventoryEGG: product.inventoryEGG,  category, image
+        }
+
+        products.push(newProduct)
+      }
+
+      if (products.length < 1) return { status: null }
+      
+      const data = products
+
+      return { status: true, data };
+    } catch (error) {
+      console.log(error);
+      return { status: false, data: [] };
+    }
+  }
+
+  async findById(id){
+    try {
+      const productsPure = await database.select(['*']).table('products').where({id})
+      const products = []
+      if (productsPure.length < 1) return { status: null }
 
       for(let product of productsPure) {
 
@@ -52,7 +108,6 @@ class Products {
         products.push(newProduct)
       }
 
-      if (products.length < 1) return { status: null }
       
       const data = products
 
@@ -63,24 +118,29 @@ class Products {
     }
   }
 
-  async findById(id) {
+  async findByCategory(name) {
     try {
-      const data = await database
-        .table('products')
-        .where({id})
-        .select([
-          'products.title', 'products.description', 'products.price', 'inventoryPP', 'inventoryP',
-          'inventoryM', 'inventoryG', 'inventoryGG', 'inventoryEG', 'inventoryEGG', 'year'
-        ])
 
-      if(data.length === 0) {
-        return { status: null, data: []}
-      }
+      const getCategoryId = await database
+        .table('categories')
+        .where({name})
+        .select(['id'])
 
-      return { status: true, data };
+      if (getCategoryId.length < 1) return { status: null }
+
+      const getProducts = await database
+        .table('products_categories')
+        .innerJoin('products', 'products.id', 'products_categories.productId')
+        .innerJoin('categories', 'categories.id', 'products_categories.categoryId')
+        .where('categories.id', getCategoryId[0].id)
+        .select(['*'])
+
+        if (getProducts.length < 1) return { status: null }
+      
+      return { status: true, data: getProducts };
     } catch (error) {
-      console.log(error)
-      return { status: false, data: []}
+      console.log(error);
+      return { status: false, data: [] };
     }
   }
 
