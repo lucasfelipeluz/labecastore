@@ -9,10 +9,9 @@ paths:
   /products:
     get:
       summary: Busca todos os produtos
-      description: Esse endpoint será responsável por buscar todos os produtos.
+      description: Esse endpoint aceita dois tipos de consulta, por id e por categoria (um por vez).
       tags: ["Public"]
-      security:  
-        - ApiKeyAuth: [] 
+
 
       parameters:
       - in: query
@@ -33,6 +32,29 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/Product"
+        204:
+          description: Sucesso, mas nenhum dado encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /categories:
+    get:
+      summary: Busca todas as categorias
+      description: Esse endpoint será responsável por buscar todos as categorias.
+      tags: ["Public"]
+
+      responses: 
+        200:
+          description: Sucesso!
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Category"
         204:
           description: Sucesso, mas nenhum dado encontrado!
         401:
