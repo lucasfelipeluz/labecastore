@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
   
       jwt.verify(authToken, secretKey, {}, (error, decoded) => {
         if (error) {
-          return Responses.unauthenticated(res, [], {}, 'Token inválido, ou expirado!')
+          return Responses.forbidden(res, [], {}, 'Você não tem permissão para acessar essa rota!')
         }
         if (decoded) {
           next()
@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
       })
   
   
-    } else return Responses.forbidden(res, [], {}, 'Você não está logado!')
+    } else return Responses.unauthenticated(res, [], {}, 'Você não está logado!')
 
   } else next();
 }

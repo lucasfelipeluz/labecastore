@@ -1,0 +1,543 @@
+openapi: 3.0.0
+info:
+  title: 🥼 API Labeca Store
+  description: Essa API irá manipular Produtos, Categorias e Imagens do catalógo.
+  version: 0.2.0
+
+paths:
+
+  /products:
+    get:
+      summary: Busca todos os produtos
+      description: Esse endpoint aceita dois tipos de consulta, por id e por categoria (um por vez).
+      tags: ["Public"]
+
+
+      parameters:
+      - in: query
+        name: id
+        schema:
+          type: integer
+      - in: query
+        name: category
+        schema:
+          type: string
+    
+
+      responses: 
+        200:
+          description: Sucesso!
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Product"
+        204:
+          description: Sucesso, mas nenhum dado encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /categories:
+    get:
+      summary: Busca todas as categorias
+      description: Esse endpoint será responsável por buscar todos as categorias.
+      tags: ["Public"]
+
+      responses: 
+        200:
+          description: Sucesso!
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Category"
+        204:
+          description: Sucesso, mas nenhum dado encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /admin/login:
+    post:
+      summary: Login de Administrador
+      description: Logo após o login, será retornado o token para ter acesso as rotas protegidas.
+      tags: ["Admin Account"]
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Product"
+            examples:
+
+              User:
+                value:  
+                  nickname: user
+                  password: password
+      responses:
+        201:
+          description: Logado!
+        400:
+          description: Requisição mal feita!
+        401:
+          description: Senha incorreta!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        406:
+          description: Nickname não encontrado!
+        500:
+          description: Ocorreu um erro interno!
+
+  /admin/products:
+
+    get:
+      summary: Buscar todos os produtos
+      description: Esse endpoint será responsável por buscar todos os produtos.
+      tags: ["Admin - Products"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      responses: 
+        200:
+          description: Sucesso!
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Product"
+        204:
+          description: Sucesso, mas nenhum dado encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+    post:
+      summary: Cadastro de produtos
+      description: Esse endpoint será responsável por cadastrar novo produto. <br> <i>O item 'categoryId' e 'imageId' recebem o id da categoria e imagem que serão associados aos produtos. </i>.
+      tags: ["Admin - Products"]
+      security:  
+        - ApiKeyAuth: [] 
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Product"
+            examples:
+
+              Produto sem Categoria e Imagem:
+                value:  
+                  title: Camisa de time
+                  description: Camisa de um time
+                  price: 99.45
+                  year: 19/20
+                  inventoryPP: 0
+                  inventoryP: 5
+                  inventoryM: 6
+                  inventoryG: 0
+                  inventoryGG: 0
+                  inventoryEG: 0
+                  inventoryEGG: 0
+
+              Produto com Categoria e Imagem: 
+                value:
+                  title: Camisa de time
+                  description: Camisa de um time
+                  price: 99.45
+                  year: 19/20
+                  inventoryPP: 0
+                  inventoryP: 5
+                  inventoryM: 6
+                  inventoryG: 0
+                  inventoryGG: 0
+                  inventoryEG: 0
+                  inventoryEGG: 0
+                  categoryId: [ 5 ]
+                  imageId: [ 5 ]
+
+      responses: 
+        201:
+          description: Produto adicionado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /admin/products/{id}:
+    put:
+      summary: Edita o produto informado
+      description: Esse endpoint será responsável por buscar um produto e edita-lo.
+      tags: ["Admin - Products"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Product"
+            examples:
+
+              Produto sem Categoria e Imagem:
+                value:  
+                  title: Camisa de time
+                  description: Camisa de um time
+                  price: 99.45
+                  year: 19/20
+                  inventoryPP: 0
+                  inventoryP: 5
+                  inventoryM: 6
+                  inventoryG: 0
+                  inventoryGG: 0
+                  inventoryEG: 0
+                  inventoryEGG: 0
+                  categoryId: []
+                  imageId: []
+
+              Produto com Categoria e Imagem: 
+                      value:
+                        title: Camisa de time
+                        description: Camisa de um time
+                        price: 99.45
+                        year: 19/20
+                        inventoryPP: 0
+                        inventoryP: 5
+                        inventoryM: 6
+                        inventoryG: 0
+                        inventoryGG: 0
+                        inventoryEG: 0
+                        inventoryEGG: 0
+                        categoryId: [ 5 ]
+                        imageId: [ 5 ]
+      
+      responses:
+        200:
+          description: Produto editado!
+        400:
+          description: O Produto informado não foi encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+    delete:
+      summary: Remove o produto informado
+      description: Esse endpoint será responsável por buscar um produto e remove-lo.
+      tags: ["Admin - Products"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+
+      responses:
+        200:
+          description: Produto apagado!
+        400:
+          description: O Produto informado não foi encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /admin/categories:
+    get:
+      summary: Buscar todas as categorias
+      description: Esse endpoint será responsável por buscar todas as categorias.
+      tags: ["Admin - Categories"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      responses: 
+        200:
+          description: Sucesso!
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Category"
+        204:
+          description: Sucesso, mas nenhum dado encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+    post:
+      summary: Cadastro de categorias
+      description: Esse endpoint será responsável por cadastrar uma nova categoria.
+      tags: ["Admin - Categories"]
+      security:  
+        - ApiKeyAuth: [] 
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Category"
+            examples:
+
+              Category:
+                value:  
+                  name: manga longa
+
+      responses: 
+        201:
+          description: Categoria criada!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /admin/categories/{id}:
+    put:
+      summary: Edita a categoria informada
+      description: Esse endpoint será responsável por buscar uma categoria e edita-la.
+      tags: ["Admin - Categories"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/Product"
+            examples:
+
+              Category:
+                value:  
+                  name: Camisa de time
+                  
+      responses:
+        200:
+          description: Categoria editada!
+        400:
+          description: O Categoria informada não foi encontrada!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+    delete:
+      summary: Remove a categoria informada
+      description: Esse endpoint será responsável por buscar uma categoria e remove-la.
+      tags: ["Admin - Categories"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+
+      responses:
+        200:
+          description: A Categoria foi apagada!
+        400:
+          description: A categoria informada não foi encontrada!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+      
+  /admin/images:
+    get:
+      summary: Buscar todas as imagens
+      description: Esse endpoint será responsável por buscar todas as imagens.
+      tags: ["Admin - Images"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      responses: 
+        200:
+          description: Sucesso!
+          content: 
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Image"
+        204:
+          description: Sucesso, mas nenhum dado encontrado!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+    post:
+      summary: Upload de Imagens
+      description: Esse endpoint será responsável por fazer o upload de imagens.
+      tags: ["Admin - Images"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photos:
+                  type: string
+                  format: binary
+                  require: true
+      
+      responses: 
+        201:
+          description: Imagem enviada!
+        400:
+          description: Nenhuma imagem enviada!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+  /admin/images/{id}:
+    delete:
+      summary: Remove a imagem informada
+      description: Esse endpoint será responsável por buscar a imagem e remove-la.
+      tags: ["Admin - Images"]
+      security:  
+        - ApiKeyAuth: [] 
+
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+
+      responses:
+        200:
+          description: A Imagem foi apagada!
+        400:
+          description: A imagem informada não foi encontrada!
+        401:
+          description: Você não tem permissão para acessar essa rota!
+        403:
+          description: Você não está autenticado. Por favor, faça login!
+        500:
+          description: Ocorreu um erro interno!
+
+
+components:
+
+  schemas:
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        year:
+          type: string
+        inventoryPP:
+          type: number
+        inventoryP:
+          type: number
+        inventoryM:
+          type: number
+        inventoryG:
+          type: number
+        inventoryGG:
+          type: number
+        inventoryEG:
+          type: number
+        inventoryEGG:
+          type: number
+        categoryId:
+          type: array
+          items: 
+            type: number
+        imageId:
+          type: array
+          items: 
+            type: number
+            
+    Category:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        slug:
+          type: string
+
+    Image:
+      type: object
+      properties:
+        id:
+          type: number
+        filename:
+          type: string
+        url:
+          type: string
+
+    UserLogin:
+      type: object
+      properties:
+        name:
+          type: string
+        nickname:
+          type: string
+        password:
+          type: string
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: authorization

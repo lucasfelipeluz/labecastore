@@ -2,8 +2,10 @@ const slugify = require('slugify');
 const Categories = require('../../models/admin/Categories');
 const Responses = require('../../utils/Responses')
 
-/* Classe responsável pelo serviços da rota admin/categories */
+// Classe responsável pelo serviços da rota admin/categories
 class CategoriesController {
+
+  // Retorna todas as categorias
   async index(req, res) {
     const responseFindAllCategories = await Categories.findAll()
 
@@ -13,27 +15,34 @@ class CategoriesController {
       'DEL/admin/categories/:id'
     ]
 
-    if (responseFindAllCategories.status) {
-      Responses.success(res, responseFindAllCategories.data, {helpRoutes})
-      return
+    // No Content
+    if (responseFindAllCategories.status === null) {
+      return Responses.noContent(res)
     }
-    Responses.internalServerError(res)
+
+    // Success
+    if (responseFindAllCategories.status === true) {
+      return Responses.success(res, responseFindAllCategories.data, {helpRoutes})
+    }
+
+    // Internal Server Error
+    return Responses.internalServerError(res)
   }
 
+  // Criação de Categorias
   async create(req, res) {
     const { id, name } = req.body;
 
+    // Bad Request
     if (name === undefined) {
       const msgError = "Name não esta sendo enviado!";
-      Responses.badRequest(res, {} , {}, msgError);
-      return;
+      return Responses.badRequest(res, {} , {}, msgError);
     }
-
     if (name === '' || name === null) {
-      Responses.notAcceptable(res, {}, {}, 'O nome da categoria é obrigatório.')
-      return;
+      return Responses.badRequest(res, {}, {}, 'O nome da categoria é obrigatório.')
     }
 
+    // Preparando dados para inserção
     const data = {
       id,
       name,
@@ -42,26 +51,27 @@ class CategoriesController {
 
     const responseCreateCategory = await Categories.insertData(data);
 
+
+    // Success
     if (responseCreateCategory.status) {
-      Responses.created(res, responseCreateCategory.data)
-      return
+      return Responses.created(res, responseCreateCategory.data)
     }
-    Responses.internalServerError(res)
+
+    // Internal Server Error
+    return Responses.internalServerError(res)
   }
 
+  // Atualizar Categoria
   async update(req, res) {
     const { name } = req.body;
     const { id } = req.params;
 
+    // Bad Request
     if (name === undefined || id === undefined) {
-      const msgError = "Name ou Id não estão sendo enviados!";
-      Responses.badRequest(res, {}, {}, msgError);
-      return;
+      return Responses.badRequest(res, {}, {}, 'Name ou Id não estão sendo enviados!');
     }
-
     if (name === '' || name === null) {
-      Responses.notAcceptable(res, {}, {}, 'O nome da categoria é obrigatório.')
-      return;
+      return Responses.notAcceptable(res, {}, {}, 'O nome da categoria é obrigatório.')
     }
 
     const data = {
@@ -71,35 +81,38 @@ class CategoriesController {
 
     const responseUpdateData = await Categories.updateData(id, data);
 
-    if (responseUpdateData.status) {
-      Responses.success(res, responseUpdateData.data)
-      return
-    }
-
+    // Bad Request
     if (responseUpdateData.status === null) {
-      Responses.unauthenticated(res, {}, {}, 'Categoria não encontrada')
-      return
+      return Responses.badRequest(res, {}, {}, 'Categoria não encontrada')
     }
 
-    Responses.internalServerError(res)
+    // Success
+    if (responseUpdateData.status) {
+      return Responses.success(res, responseUpdateData.data)
+    }
+
+    // Internal Server Error
+    return Responses.internalServerError(res)
   }
 
+  // Deletando Categoria
   async delete(req, res) {
     const { id } = req.params;
 
     const response = await Categories.deleteData(id);
-
-    if (response.status) {
-      Responses.success(res, response.data)
-      return
-    }
-
+  
+    // Bad Request
     if (response.status === null) {
-      Responses.unauthenticated(res, {}, {}, 'Categoria não encontrada')
-      return
+      return Responses.badRequest(res, {}, {}, 'Categoria não encontrada')
     }
 
-    Responses.internalServerError(res)
+    // Success
+    if (response.status) {
+      return Responses.success(res, response.data)
+    }
+
+    // Internal Server Error
+    return Responses.internalServerError(res)
   }
 
 }
