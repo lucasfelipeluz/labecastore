@@ -26,7 +26,6 @@ router.delete('/delete', AdminAuth, AdminController.remove)
 /*  Products
     Precisa de credenciais de Administrador */
 router.get('/products', AdminAuth, ProductsController.index);
-router.get('/products/details/:id', AdminAuth, ProductsController.details);
 router.post('/products', AdminAuth, ProductsController.create);
 router.put('/products/:id', AdminAuth, ProductsController.update);
 router.delete('/products/:id', AdminAuth, ProductsController.delete);
@@ -41,7 +40,7 @@ router.delete('/categories/:id', AdminAuth, CategoriesController.delete);
 /*  Images
     Precisa de crendeciais de Administrador */
 router.get('/images', AdminAuth, ImagesController.index)
-router.post('/images', AdminAuth, upload.array('photos', 1), ImagesController.create)
+router.post('/images', AdminAuth, upload.array('photos', 5), ImagesController.create)
 router.delete('/images/:id', AdminAuth, ImagesController.delete)
 
 module.exports = router;

@@ -9,6 +9,8 @@ class Images {
         .select(['id', 'filename', 'url'])
         .table('images');
 
+      if (data.length < 1) return { status: null }
+
       return {status: true, data}
     } catch (error) {
       console.log(error)

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const secretKey = process.env.secret_key;
 
-/* Classe responsável pelo servições da rota Admin */
+// Classe responsável pelo serviços da Administradores
 class Admin {
   async create(req, res) {
     const { name, nickname, password, role } = req.body;

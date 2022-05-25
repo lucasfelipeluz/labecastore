@@ -8,6 +8,8 @@ class Categories {
       const data = await database.select(['id', 'name','slug'])
         .table('categories');
 
+      if (data.length < 1) return { status: null }
+
       return {status:true, data};
 
     } catch (error) {
