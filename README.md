@@ -1,26 +1,23 @@
 <h1 align="center">
-  🥼<br>La Beca Store
+  🥼<br>La Beca Store - API
 </h1>
 
 <h4 align="center">
-  Loja online de camisas de futebol
+  Catálogo de artigos esportivos
 </h4>
 
 
 
-<h4 align="center"><a href="https://github.com/lucasfelipeluz/labecastore/">Clique para ir ao projeto</a></h4>
+<h4 align="center"><a href="https://labecastore.herokuapp.com/docs/">Clique aqui para ir a documentação do projeto</a></h4>
 
 ## 📖 Seções
 O projeto é composto pelo Back End e Front End. Nesse repositória só terá o backend, em breve colocarei o link para o frontend.
 
 ---
 
-## 🔧 Tecnologias utilizadas
-Para o desenvolvimento deste projeto utilizo e vou utilizar as seguintes tecnologias e bibliotecas:
+## 🔧 Tecnologias/dependências utilizadas nessa seção do projeto
 
-Node.js, Express, SDK da AWS S3, Multer, Mime e Slugify.
--Banco de Dados:
-SQL e MongoDB.
+AWS SDK, Bcrypt, dotenv, express, jsonwebtoken, knex, mime, multer, mysql2, knex, swagger e yamljs.
 
 ---
 
