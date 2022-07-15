@@ -8,11 +8,15 @@ class CategoriesController {
   // Retorna todas as categorias
   async index(req, res) {
     try {
-      const connectionOption = Database.getConnectionOption();
+      const connectionOption = Database.getConnectionOptions();
+
+      const filters = req.query;
 
       const responseFindAllCategories = await Categories(
         connectionOption
-      ).findAll();
+      ).findAll({
+        where: filters,
+      });
 
       const helpRoutes = [
         "POST/admin/categories",
@@ -31,48 +35,44 @@ class CategoriesController {
       });
     } catch (error) {
       console.log(error);
-      return Responses.internalServerError(res, [], {}, error);
+      return Responses.internalServerError(res, error);
     }
   }
 
   // Criação de Categorias
   async create(req, res) {
     try {
-      const connectionOption = Database.getConnectionOption();
+      const connectionOption = Database.getConnectionOptions();
 
       const { id, name } = req.body;
 
       // Bad Request
       if (name === undefined) {
         const msgError = "Name não esta sendo enviado!";
-        return Responses.badRequest(res, {}, {}, msgError);
+        return Responses.badRequest(res, msgError, {}, {});
       }
       if (name === "" || name === null) {
-        return Responses.badRequest(
-          res,
-          {},
-          {},
-          "O nome da categoria é obrigatório."
-        );
+        return Responses.badRequest(res, "O nome da categoria é obrigatório.");
       }
 
       const responseCreateCategory = await Categories(connectionOption).create({
         name,
         slug: slugify(name).toLowerCase(),
+        createdBy: 4,
       });
 
       // Success
       return Responses.created(res, responseCreateCategory);
     } catch (error) {
       console.log(error);
-      return Responses.internalServerError(res, [], {}, error);
+      return Responses.internalServerError(res, error);
     }
   }
 
   // Atualizar Categoria
   async update(req, res) {
     try {
-      const connectionOption = Database.getConnectionOption();
+      const connectionOption = Database.getConnectionOptions();
 
       const { name } = req.body;
       const { id } = req.params;
@@ -81,8 +81,6 @@ class CategoriesController {
       if (name === undefined || id === undefined) {
         return Responses.badRequest(
           res,
-          {},
-          {},
           "Name ou Id não estão sendo enviados!"
         );
       }
@@ -90,8 +88,6 @@ class CategoriesController {
       if (name === "" || name === null) {
         return Responses.notAcceptable(
           res,
-          {},
-          {},
           "O nome da categoria é obrigatório."
         );
       }
@@ -100,6 +96,7 @@ class CategoriesController {
         {
           name,
           slug: slugify(name).toLowerCase(),
+          updatedBy: 4,
         },
         {
           where: {
@@ -111,22 +108,27 @@ class CategoriesController {
       return Responses.success(res);
     } catch (error) {
       console.log(error);
-      return Responses.internalServerError(res, [], {}, error);
+      return Responses.internalServerError(res, error);
     }
   }
 
   // Deletando Categoria
   async delete(req, res) {
     try {
-      const connectionOption = Database.getConnectionOption();
+      const connectionOption = Database.getConnectionOptions();
 
       const { id } = req.params;
 
-      const response = await Categories(connectionOption).destroy({
-        where: {
-          id,
+      const response = await Categories(connectionOption).update(
+        {
+          active: false,
         },
-      });
+        {
+          where: {
+            id,
+          },
+        }
+      );
 
       // Bad Request
       if (response.status === null) {
