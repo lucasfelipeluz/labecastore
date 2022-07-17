@@ -5,6 +5,7 @@ const secretKey = process.env.secret_key;
 
 module.exports = (req, res, next) => {
   const authToken = req.headers["authorization"];
+  console.log(authToken);
 
   if (process.env.authStatus === "true") {
     if (authToken != undefined) {
@@ -12,18 +13,16 @@ module.exports = (req, res, next) => {
         if (error) {
           return Responses.forbidden(
             res,
-            "Você não tem permissão para acessar essa rota!",
-            [],
-            {}
+            "Você não tem permissão para acessar essa rota!"
           );
         }
         if (decoded) {
-          console.log(decoded);
+          req.user = decoded;
           next();
         }
       });
     } else {
-      return Responses.unauthenticated(res, "Você não está logado!", [], {});
+      return Responses.unauthenticated(res, "Você não está logado!");
     }
   } else next();
 };
