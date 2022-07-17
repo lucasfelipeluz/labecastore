@@ -15,7 +15,7 @@ module.exports = (connectionOption) => {
       active: {
         type: DataTypes.BLOB,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: 1,
       },
       createdBy: {
         type: DataTypes.INTEGER,
