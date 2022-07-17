@@ -5,7 +5,7 @@ const multer = require("multer");
 const uploadConfig = require("../config/upload");
 
 /* Importando Controllers */
-const AdminController = require("../controllers/admin/AdminController");
+const UsersController = require("../controllers/UsersController");
 const ProductsController = require("../controllers/admin/ProductsController");
 const CategoriesController = require("../controllers/admin/CategoriesController");
 const ImagesController = require("../controllers/admin/ImagesController");
@@ -18,10 +18,11 @@ const router = express.Router();
 const upload = multer(uploadConfig);
 
 // Login Admin
-router.post("/login", AdminController.login);
-router.post("/create", AdminAuth, AdminController.create);
-router.put("/changepassword", AdminAuth, AdminController.update);
-router.delete("/delete", AdminAuth, AdminController.remove);
+router.post("/login", UsersController.login);
+router.post("/create", UsersController.create);
+router.put("/changepassword", AdminAuth, UsersController.update);
+router.put("/authorize", AdminAuth, UsersController.authorizeUser);
+router.delete("/delete", AdminAuth, UsersController.remove);
 
 /*  Products
     Precisa de credenciais de Administrador */
