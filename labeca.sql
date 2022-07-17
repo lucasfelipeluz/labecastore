@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `labeca` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `labeca`;
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: labeca
+-- Host: localhost    Database: labeca
 -- ------------------------------------------------------
--- Server version	8.0.28
+-- Server version	8.0.29
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -18,34 +16,6 @@ USE `labeca`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `admin`
---
-
-DROP TABLE IF EXISTS `admin`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `admin` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nickname` varchar(50) NOT NULL DEFAULT '0',
-  `name` varchar(50) NOT NULL DEFAULT '0',
-  `password` varchar(100) NOT NULL DEFAULT '0',
-  `role` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nickname` (`nickname`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admin`
---
-
-LOCK TABLES `admin` WRITE;
-/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` VALUES (2,'lucas','lucas','lucas',0);
-/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `categories`
 --
 
@@ -54,20 +24,20 @@ DROP TABLE IF EXISTS `categories`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `categories` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
+  `name` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `slug` varchar(50) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=989903 DEFAULT CHARSET=utf8mb3;
+  `createdAt` timestamp NOT NULL,
+  `updatedAt` timestamp NOT NULL,
+  `createdBy` int NOT NULL DEFAULT '0',
+  `updatedBy` int NOT NULL DEFAULT '0',
+  `active` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `categories_createdby` (`createdBy`),
+  KEY `categories_updatedby` (`updatedBy`),
+  CONSTRAINT `categories_createdby` FOREIGN KEY (`createdBy`) REFERENCES `users` (`id`),
+  CONSTRAINT `categories_updatedby` FOREIGN KEY (`updatedBy`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `categories`
---
-
-LOCK TABLES `categories` WRITE;
-/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `images`
@@ -78,21 +48,17 @@ DROP TABLE IF EXISTS `images`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `images` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `filename` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `url` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=919194 DEFAULT CHARSET=utf8mb3;
+  `filename` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `url` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `createdAt` timestamp NOT NULL,
+  `updatedAt` timestamp NOT NULL,
+  `createdBy` int NOT NULL,
+  `active` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `images_createdBy` (`createdBy`),
+  CONSTRAINT `images_createdBy` FOREIGN KEY (`createdBy`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `images`
---
-
-LOCK TABLES `images` WRITE;
-/*!40000 ALTER TABLE `images` DISABLE KEYS */;
-INSERT INTO `images` VALUES (919192,'1648506294898-profile.webp','https://labeca.s3.amazonaws.com/1648506294898-profile.webp?AWSAccessKeyId=AKIAY7YJGSRQZ44TSSR3&Expires=1648507194&Signature=cExTieYUPWMadDdUGMcF1yLj63w%3D');
-/*!40000 ALTER TABLE `images` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `products`
@@ -114,18 +80,18 @@ CREATE TABLE `products` (
   `inventoryEG` int DEFAULT NULL,
   `inventoryEGG` int DEFAULT NULL,
   `year` varchar(10) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=919192 DEFAULT CHARSET=utf8mb3;
+  `createdAt` timestamp NOT NULL,
+  `updatedAt` timestamp NOT NULL,
+  `createdBy` int NOT NULL,
+  `updatedBy` int NOT NULL,
+  `active` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `products_createdby` (`createdBy`),
+  KEY `products_updatedby` (`updatedBy`),
+  CONSTRAINT `products_createdby` FOREIGN KEY (`createdBy`) REFERENCES `users` (`id`),
+  CONSTRAINT `products_updatedby` FOREIGN KEY (`updatedBy`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `products`
---
-
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `products_categories`
@@ -143,17 +109,8 @@ CREATE TABLE `products_categories` (
   KEY `category` (`categoryId`),
   CONSTRAINT `category` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `product` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=321 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `products_categories`
---
-
-LOCK TABLES `products_categories` WRITE;
-/*!40000 ALTER TABLE `products_categories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products_categories` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `products_images`
@@ -171,17 +128,26 @@ CREATE TABLE `products_images` (
   KEY `image_pdt` (`imageId`),
   CONSTRAINT `image_pdt` FOREIGN KEY (`imageId`) REFERENCES `images` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `product_img` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=342 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `products_images`
+-- Table structure for table `users`
 --
 
-LOCK TABLES `products_images` WRITE;
-/*!40000 ALTER TABLE `products_images` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products_images` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(50) NOT NULL DEFAULT '0',
+  `name` varchar(50) NOT NULL DEFAULT '0',
+  `password` varchar(100) NOT NULL DEFAULT '0',
+  `role` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nickname` (`nickname`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -192,4 +158,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-31 11:30:09
+-- Dump completed on 2022-07-11 21:17:12
