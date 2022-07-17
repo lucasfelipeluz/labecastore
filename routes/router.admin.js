@@ -26,6 +26,7 @@ router.delete("/delete", AdminAuth, AdminController.remove);
 /*  Products
     Precisa de credenciais de Administrador */
 router.get("/products", AdminAuth, ProductsController.index);
+router.get("/products/:id", AdminAuth, ProductsController.getById);
 router.post("/products", AdminAuth, ProductsController.create);
 router.put("/products/:id", AdminAuth, ProductsController.update);
 router.delete("/products/:id", AdminAuth, ProductsController.delete);
