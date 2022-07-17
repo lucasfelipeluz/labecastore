@@ -14,8 +14,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Swagger
-const swaggerYAML = yaml.load('./docs/swagger.yaml')
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerYAML))
+if (process.env.server_mode == 'dev'){
+  const swaggerYAML = yaml.load('./docs/swagger.yaml')
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerYAML))
+}
 
 // Usando Rotas
 app.use('/', router);

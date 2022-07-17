@@ -1,93 +1,94 @@
-const Responses = require('../../utils/Responses')
-const Images = require('../../models/admin/Images')
+const Responses = require("../../utils/Responses");
+const Images = require("../../models/Images");
 
-const S3Storage = require('../../services/aws/S3Storage')
+const S3Storage = require("../../services/aws/S3Storage");
+const Database = require("../../databases/database");
 
 //  Classe responsável por upload, deleção e atualização de Images e informações
 //  admin/images
 class ImagesController {
+  // Retorna todas as imagens no banco
+  async index(req, res) {
+    try {
+      const connectionOption = Database.getConnectionOptions();
+
+      const helpRoutes = ["POST/admin/images", "DEL/admin/images/:id"];
+
+      const response = await Images(connectionOption).findAll();
+
+      return Responses.success(res, response, { helpRoutes });
+    } catch (error) {
+      console.log(error);
+      return Responses.internalServerError(res, error);
+    }
+  }
 
   // Retorna todas as imagens na nuvem
-  async index(req, res) {
-    const helpRoutes = [
-      'POST/admin/images', 
-      'DEL/admin/images/:id'
-    ]
+  async getAws(req, res) {
+    try {
+      const response = await S3Storage.GetAll();
 
-    const response = await Images.findAll();
-
-    // No Content
-    if (response.status === null) {
-      return Responses.noContent(res);
+      return Responses.success(res, response);
+    } catch (error) {
+      console.log(error);
+      return Responses.internalServerError(res, error);
     }
-
-    // Success
-    if (response.status === true) {
-      return Responses.success(res, response.data, { helpRoutes });
-    }
-
-    // Internal Server Error
-    return Responses.internalServerError(res)
   }
 
   // Responsável pelo Upload da imagem e salvar informações dela.
   async create(req, res) {
-    async function checkResponses(res, response) {
-      if (response.status) {
-        return
-      }
-      Responses.internalServerError(res)
+    const connectionOption = Database.getConnectionOptions();
+    try {
+      const { name, img } = req.body;
+
+      let filename = `${name}_${Date.now()}.jpg`;
+
+      await S3Storage.saveFile(img, filename);
+
+      await Images(connectionOption).create({
+        filename,
+        createdBy: 4,
+      });
+
+      // Success
+      Responses.created(res);
+    } catch (error) {
+      console.log(error);
+      Responses.internalServerError(res, error);
     }
-
-    const { files } = req;
-    if (files === undefined || files === null) return Responses.badRequest(res, [], {}, 'Nenhum arquivo está sendo enviado!')
-    if (files.length < 1) return Responses.badRequest(res, [], {}, 'Nenhum arquivo está sendo enviado!')
-    if (files.length > 1) return Responses.badRequest(res, [], {}, 'Apenas uma imagem por vez!')
-
-    const nomeDoArquivo = files[0].filename;
-
-    // Envia a imagem, e retorna uma url para acessa-la
-    const responseUploadAWS = await S3Storage.saveFile(nomeDoArquivo)
-    const responseCreateLinkAWS = await S3Storage.GetUrl(nomeDoArquivo)
-    const responseDB = await Images.insertData(nomeDoArquivo, responseCreateLinkAWS.data)
-
-    // Checando se tudo deu certo
-    checkResponses(res, responseUploadAWS)
-    checkResponses(res, responseCreateLinkAWS)
-    checkResponses(res, responseDB)
-
-    // Success
-    Responses.created(res)
   }
 
   /* Deleta a imagem na AWS e informações no BD segundo o ID*/
   async delete(req, res) {
-    const { id } = req.params;
+    const connectionOption = Database.getConnectionOptions();
+    try {
+      const { id } = req.params;
 
-    const responseFilename = await Images.findFilenaById(id);
+      const image = await Images(connectionOption).findOne({
+        where: {
+          id,
+        },
+      });
 
-    if (responseFilename.status === null) {
-      Responses.unauthenticated(res, {}, {}, "Imagem não encontrada!");
-      return
+      await S3Storage.deleteFile(image.filename);
+
+      await Images(connectionOption).update(
+        {
+          active: false,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+
+      Responses.success(res, image);
+    } catch (error) {
+      console.log(error);
+      Responses.internalServerError(res);
     }
-
-    const responseAWS = await S3Storage.deleteFile(responseFilename.data)
-    if(responseAWS.status === false) {
-      Responses.internalServerError(res, {}, {}, "Erro no servidor ao apagar a imagem");
-      return
-    }
-
-
-    const response = await Images.deleteData(id);
-    if(response.status === null) {
-      Responses.unauthenticated(res, {}, {}, "Imagem não encontrada");
-      return
-    }
-
-    Responses.success(res, [], `${responseFilename.data} foi apagado!`)
-    return
   }
-
 }
 
 module.exports = new ImagesController();
