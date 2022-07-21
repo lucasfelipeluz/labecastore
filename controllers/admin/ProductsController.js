@@ -2,6 +2,10 @@ const Products = require("../../models/Products");
 const Responses = require("../../utils/Responses");
 
 const Database = require("../../databases/database");
+const Categories = require("../../models/Categories");
+const Images = require("../../models/Images");
+
+const { productFilters } = require("../../utils/filters");
 
 // Classe responsável pelo servições da rota admin/products
 class ProductsController {
@@ -16,9 +20,9 @@ class ProductsController {
         "PUT/admin/products/:id",
         "DELETE/admin/products/:id",
       ];
-      const responseFindAllProducts = await Products(
-        connectionOption
-      ).findAll();
+      const responseFindAllProducts = await Products(connectionOption).findAll(
+        productFilters(connectionOption, req)
+      );
 
       return Responses.success(res, responseFindAllProducts, {
         helpRoutes,
@@ -29,17 +33,14 @@ class ProductsController {
     }
   }
 
+  // Busca o produto pelo o id
   async getById(req, res) {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const { id } = req.params;
-
-      const responseProduct = await Products(connectionOption).findOne({
-        where: {
-          id,
-        },
-      });
+      const responseProduct = await Products(connectionOption).findOne(
+        productFilters(connectionOption, req)
+      );
 
       return Responses.success(res, responseProduct);
     } catch (error) {
@@ -99,7 +100,8 @@ class ProductsController {
         inventoryEG,
         inventoryEGG,
         year,
-        createdBy: 4,
+        active: false,
+        createdBy: req.user.id,
       };
 
       const responseCreateProducts = await Products(connectionOption).create(
@@ -130,8 +132,10 @@ class ProductsController {
         inventoryEG,
         inventoryEGG,
         year,
+        active,
       } = req.body;
       const { id } = req.params;
+      console.log(req.body);
 
       const responseUpdateDatabase = await Products(connectionOption).update(
         {
@@ -146,7 +150,8 @@ class ProductsController {
           inventoryEG,
           inventoryEGG,
           year,
-          updatedBy: 4,
+          active,
+          updatedBy: req.user.id,
         },
         {
           where: {
@@ -172,7 +177,8 @@ class ProductsController {
 
       await Products(connectionOption).update(
         {
-          active: 0,
+          active: false,
+          updatedBy: req.user.id,
         },
         {
           where: {
