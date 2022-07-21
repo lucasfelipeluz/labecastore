@@ -15,7 +15,7 @@ module.exports = (connectionOption) => {
       active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 1,
+        defaultValue: false,
       },
       createdBy: {
         type: DataTypes.INTEGER,
