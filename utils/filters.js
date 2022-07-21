@@ -30,8 +30,28 @@ const productFilters = (connectionOption, req) => {
     filters.where["id"] = id;
   }
 
-  console.log(filters);
   return filters;
 };
 
-module.exports = { productFilters };
+const categoriesFilters = (connectionOption, req) => {
+  const { id, active, slug } = req.query;
+
+  let filters = {
+    where: {},
+    order: [["id", "DESC"]],
+  };
+
+  if (active) {
+    filters.where["active"] = active === "true" ? true : false;
+  }
+  if (slug) {
+    filters.where["slug"] = slug;
+  }
+  if (id) {
+    filters.where["id"] = id;
+  }
+
+  return filters;
+};
+
+module.exports = { productFilters, categoriesFilters };
