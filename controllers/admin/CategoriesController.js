@@ -1,7 +1,10 @@
 const slugify = require("slugify");
+
 const Categories = require("../../models/Categories");
 const Responses = require("../../utils/Responses");
 const Database = require("../../databases/database");
+
+const { categoriesFilters } = require("../../utils/filters");
 
 // Classe responsável pelo serviços da rota admin/categories
 class CategoriesController {
@@ -10,13 +13,9 @@ class CategoriesController {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const filters = req.query;
-
       const responseFindAllCategories = await Categories(
         connectionOption
-      ).findAll({
-        where: filters,
-      });
+      ).findAll(categoriesFilters(connectionOption, req));
 
       const helpRoutes = [
         "POST/admin/categories",
@@ -58,7 +57,7 @@ class CategoriesController {
       const responseCreateCategory = await Categories(connectionOption).create({
         name,
         slug: slugify(name).toLowerCase(),
-        createdBy: 4,
+        createdBy: req.user.id,
       });
 
       // Success
@@ -74,7 +73,7 @@ class CategoriesController {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const { name } = req.body;
+      const { name, active } = req.body;
       const { id } = req.params;
 
       // Bad Request
@@ -96,7 +95,8 @@ class CategoriesController {
         {
           name,
           slug: slugify(name).toLowerCase(),
-          updatedBy: 4,
+          active,
+          updatedBy: req.user.id,
         },
         {
           where: {
@@ -122,6 +122,7 @@ class CategoriesController {
       const response = await Categories(connectionOption).update(
         {
           active: false,
+          updatedBy: req.user.id,
         },
         {
           where: {
