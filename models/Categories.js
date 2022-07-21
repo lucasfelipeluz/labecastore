@@ -1,4 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
+const Products = require("./Products");
+const ProductsCategories = require("./ProductsCategories");
 
 module.exports = (connectionOption) => {
   class Categories extends Model {}
@@ -13,7 +15,7 @@ module.exports = (connectionOption) => {
         allowNull: false,
       },
       active: {
-        type: DataTypes.BLOB,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: 1,
       },
@@ -34,5 +36,6 @@ module.exports = (connectionOption) => {
       timestamps: true,
     }
   );
+
   return Categories;
 };

@@ -8,8 +8,12 @@ module.exports = (connectionOption) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      main: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
       active: {
-        type: DataTypes.BLOB,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: 1,
       },
