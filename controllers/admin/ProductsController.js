@@ -1,9 +1,6 @@
 const Products = require("../../models/Products");
 const Responses = require("../../utils/Responses");
-
 const Database = require("../../databases/database");
-const Categories = require("../../models/Categories");
-const Images = require("../../models/Images");
 
 const { productFilters } = require("../../utils/filters");
 
