@@ -22,6 +22,11 @@ module.exports = (connectionOption) => {
         allowNull: false,
         references: { model: "users", key: "id" },
       },
+      id_product: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: "products", key: "id" },
+      },
     },
     {
       sequelize: connectionOption,
