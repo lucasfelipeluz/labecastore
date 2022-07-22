@@ -2,8 +2,9 @@ const Products = require("../models/Products");
 const Categories = require("../models/Categories");
 const Images = require("../models/Images");
 const Responses = require("../utils/Responses");
-
 const Database = require("../databases/database");
+
+const { productPublicFilters, categoriesFilters } = require("../utils/filters");
 
 // Classe responsável pelo serviços da Administradores
 class PublicControllers {
@@ -11,14 +12,9 @@ class PublicControllers {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const products = await Products(connectionOption).findAll({
-        include: [
-          {
-            model: Categories(connectionOption),
-            attributes: ["id", "name", "slug"],
-          },
-        ],
-      });
+      const products = await Products(connectionOption).findAll(
+        productPublicFilters(connectionOption, req)
+      );
 
       return Responses.created(res, products);
     } catch (error) {
@@ -31,7 +27,9 @@ class PublicControllers {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const categories = await Categories(connectionOption).findAll();
+      const categories = await Categories(connectionOption).findAll(
+        categoriesFilters(connectionOption, req)
+      );
 
       return Responses.success(res, categories);
     } catch (error) {
