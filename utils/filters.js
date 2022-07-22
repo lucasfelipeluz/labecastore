@@ -54,4 +54,28 @@ const categoriesFilters = (connectionOption, req) => {
   return filters;
 };
 
-module.exports = { productFilters, categoriesFilters };
+const imagesFilters = (connectionOption, req) => {
+  const { id, active, filename, main } = req.query;
+
+  let filters = {
+    where: {},
+    order: [["id", "DESC"]],
+  };
+
+  if (active) {
+    filters.where["active"] = active === "true" ? true : false;
+  }
+  if (filename) {
+    filters.where["filename"] = filename;
+  }
+  if (id) {
+    filters.where["id"] = id;
+  }
+  if (main) {
+    filters.where["main"] = main === "true" ? true : false;
+  }
+
+  return filters;
+};
+
+module.exports = { productFilters, categoriesFilters, imagesFilters };
