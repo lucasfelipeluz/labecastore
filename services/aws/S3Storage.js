@@ -30,29 +30,28 @@ class S3Storage {
       return responseAWS.Contents;
     } catch (error) {
       console.log(error);
-      return { status: false };
+      return { status: false, error: error.message };
     }
   }
 
   // Retorna o objeto em base64
-  async GetObject(filename) {
+  async GetObject(folder, filename) {
     try {
       const responseAWS = await this.client
         .getObject({
           Bucket: process.env.aws_bucket_name,
-          Key: filename,
+          Key: `${folder}/${filename}`,
         })
         .promise();
 
       return { status: true, data: responseAWS.Body.toString("base64") };
     } catch (error) {
-      console.log(error);
-      return { status: false };
+      return { status: false, error: error.message };
     }
   }
 
   // Enviando
-  async saveFile(base64, filename) {
+  async saveFile(base64, folder, filename) {
     try {
       const buffer = Buffer.from(base64, "base64");
 
@@ -69,7 +68,7 @@ class S3Storage {
       await this.client
         .putObject({
           Bucket: process.env.aws_bucket_name,
-          Key: filename,
+          Key: `${folder}/${filename}`,
           Body: fileContent,
         })
         .promise();
@@ -79,24 +78,24 @@ class S3Storage {
       return { status: true };
     } catch (error) {
       console.warn(error);
-      return { status: false };
+      return { status: false, error: error.message };
     }
   }
 
   // Apagando
-  async deleteFile(filename) {
+  async deleteFile(folder, filename) {
     try {
       await this.client
         .deleteObject({
           Bucket: process.env.aws_bucket_name,
-          Key: filename,
+          Key: `${folder}/${filename}`,
         })
         .promise();
 
       return { status: true };
     } catch (error) {
       console.warn(error);
-      return { status: false };
+      return { status: false, error: error.message };
     }
   }
 }

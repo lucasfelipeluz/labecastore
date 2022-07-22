@@ -1,4 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
+const Categories = require("./Categories");
+const Images = require("./Images");
+const ProductsCategories = require("./ProductsCategories");
+const ProductsImages = require("./ProductsImages");
 
 module.exports = (connectionOption) => {
   class Products extends Model {}
@@ -49,9 +53,9 @@ module.exports = (connectionOption) => {
         allowNull: false,
       },
       active: {
-        type: DataTypes.BLOB,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 1,
+        defaultValue: false,
       },
       createdBy: {
         type: DataTypes.INTEGER,
@@ -70,5 +74,37 @@ module.exports = (connectionOption) => {
       timestamps: true,
     }
   );
+  Products.belongsToMany(Categories(connectionOption), {
+    through: {
+      model: ProductsCategories(connectionOption),
+    },
+    foreignKey: "productId",
+    constraints: true,
+  });
+
+  Categories(connectionOption).belongsToMany(Products, {
+    through: {
+      model: ProductsCategories(connectionOption),
+    },
+    foreignKey: "categoryId",
+    constraints: true,
+  });
+
+  Products.belongsToMany(Images(connectionOption), {
+    through: {
+      model: ProductsImages(connectionOption),
+    },
+    foreignKey: "productId",
+    constraints: true,
+  });
+
+  Images(connectionOption).belongsToMany(Products, {
+    through: {
+      model: ProductsImages(connectionOption),
+    },
+    foreignKey: "imageId",
+    constraints: true,
+  });
+
   return Products;
 };

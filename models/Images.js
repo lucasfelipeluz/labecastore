@@ -8,15 +8,24 @@ module.exports = (connectionOption) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      active: {
-        type: DataTypes.BLOB,
+      main: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 1,
+      },
+      active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: "users", key: "id" },
+      },
+      id_product: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: "products", key: "id" },
       },
     },
     {

@@ -9,6 +9,7 @@ const UsersController = require("../controllers/UsersController");
 const ProductsController = require("../controllers/admin/ProductsController");
 const CategoriesController = require("../controllers/admin/CategoriesController");
 const ImagesController = require("../controllers/admin/ImagesController");
+const AWSController = require("../controllers/admin/AWSController");
 
 const AdminAuth = require("../middleware/AdminAuth");
 
@@ -41,9 +42,15 @@ router.delete("/categories/:id", AdminAuth, CategoriesController.delete);
 
 /*  Images
     Precisa de crendeciais de Administrador */
-router.get("/images/aws", AdminAuth, ImagesController.getAws);
 router.get("/images", AdminAuth, ImagesController.index);
 router.post("/images", AdminAuth, ImagesController.create);
 router.delete("/images/:id", AdminAuth, ImagesController.delete);
+
+/* AWS
+   Precisa de crendeciais de Administrador */
+router.get("/aws", AdminAuth, AWSController.getAll);
+router.get("/aws/:filename", AdminAuth, AWSController.getBase64);
+router.post("/aws", AdminAuth, AWSController.create);
+router.delete("/aws/:filename", AdminAuth, AWSController.delete);
 
 module.exports = router;
