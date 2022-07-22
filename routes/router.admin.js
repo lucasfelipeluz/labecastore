@@ -42,7 +42,6 @@ router.delete("/categories/:id", AdminAuth, CategoriesController.delete);
 
 /*  Images
     Precisa de crendeciais de Administrador */
-router.get("/images/aws", AdminAuth, ImagesController.getAws);
 router.get("/images", AdminAuth, ImagesController.index);
 router.post("/images", AdminAuth, ImagesController.create);
 router.delete("/images/:id", AdminAuth, ImagesController.delete);
