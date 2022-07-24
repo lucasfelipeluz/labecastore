@@ -23,19 +23,19 @@ if (process.env.server_mode == "dev") {
 app.use("/", router);
 
 /* Iniciando Server */
-const port = process.env.PORT || 8989;
+const port = process.env.port || 8989;
 app.listen(port, (erro) => {
   if (process.env.server_mode == "dev") {
+    if (erro) console.log("Erro ao iniciar o servidor!");
+    else {
+      console.log(`Development server running in port: ${port}`);
+    }
+  } else {
     if (erro) console.log("Erro ao iniciar o servidor!");
     else {
       console.log(`Server running in port: ${port}`);
     }
   }
-});
-
-console.log({
-  server_mode: process.env.server_mode,
-  port,
 });
 
 module.exports = app;
