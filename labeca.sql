@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `labeca` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `labeca`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: localhost    Database: labeca
@@ -42,15 +40,6 @@ CREATE TABLE `categories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `categories`
---
-
-LOCK TABLES `categories` WRITE;
-/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `images`
 --
 
@@ -73,15 +62,6 @@ CREATE TABLE `images` (
   CONSTRAINT `images_product` FOREIGN KEY (`id_product`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `images`
---
-
-LOCK TABLES `images` WRITE;
-/*!40000 ALTER TABLE `images` DISABLE KEYS */;
-/*!40000 ALTER TABLE `images` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `products`
@@ -117,15 +97,6 @@ CREATE TABLE `products` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `products`
---
-
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `products_categories`
 --
 
@@ -143,15 +114,6 @@ CREATE TABLE `products_categories` (
   CONSTRAINT `product` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `products_categories`
---
-
-LOCK TABLES `products_categories` WRITE;
-/*!40000 ALTER TABLE `products_categories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products_categories` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `products_images`
@@ -173,15 +135,6 @@ CREATE TABLE `products_images` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `products_images`
---
-
-LOCK TABLES `products_images` WRITE;
-/*!40000 ALTER TABLE `products_images` DISABLE KEYS */;
-/*!40000 ALTER TABLE `products_images` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `users`
 --
 
@@ -199,15 +152,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `nickname` (`nickname`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `users`
---
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -218,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-24 16:47:28
+-- Dump completed on 2022-07-24 23:37:22
