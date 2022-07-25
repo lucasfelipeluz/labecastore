@@ -1,6 +1,6 @@
 {
   "name": "labecastore",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Loja Online de artigos esportivos",
   "main": "app.js",
   "engines": {
