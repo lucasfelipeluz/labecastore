@@ -4,10 +4,14 @@ require("dotenv").config();
 const express = require("express");
 const yaml = require("yamljs");
 const swaggerUi = require("swagger-ui-express");
+const cors = require("cors");
 
 const router = require("./routes/routes");
 
 const app = express();
+
+//Cors
+app.use(cors());
 
 // Body Parser
 app.use(express.urlencoded({ extended: false }));
