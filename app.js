@@ -14,8 +14,9 @@ const app = express();
 app.use(cors());
 
 // Body Parser
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.urlencoded({ limit: "200mb", extended: false }));
+app.use(express.json({ limit: "200mb" }));
+app.use(express.text({ limit: "200mb" }));
 
 // Swagger
 if (process.env.server_mode == "dev") {
