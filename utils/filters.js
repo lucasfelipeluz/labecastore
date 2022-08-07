@@ -79,7 +79,12 @@ const imagesFilters = (connectionOption, req) => {
 };
 
 const productPublicFilters = (connectionOption, req) => {
-  const { id, active, year, category, image } = req.query;
+  const { id, active, year, category, image, limit } = req.query;
+
+  let limitDefault = 20;
+  if (limit !== undefined) {
+    limitDefault = parseInt(limit);
+  }
 
   let filters = {
     include: [
@@ -92,6 +97,7 @@ const productPublicFilters = (connectionOption, req) => {
     ],
     where: {},
     order: [["id", "DESC"]],
+    limit: limitDefault,
   };
 
   if (active) {
