@@ -33,8 +33,6 @@ app.listen(process.env.PORT || 5000, (erro) => {
     if (erro) console.log("Erro ao iniciar o servidor!");
     else {
       console.log(`Development server running in port: ${PORT}`);
-
-      console.log(process.env);
     }
   } else {
     if (erro) console.log("Erro ao iniciar o servidor!");
