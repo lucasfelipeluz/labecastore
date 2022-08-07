@@ -28,11 +28,13 @@ app.use("/", router);
 
 /* Iniciando Server */
 const port = process.env.port || 5000;
-app.listen(port, (erro) => {
+app.listen(process.env.port || 5000, (erro) => {
   if (process.env.server_mode == "dev") {
     if (erro) console.log("Erro ao iniciar o servidor!");
     else {
       console.log(`Development server running in port: ${port}`);
+
+      console.log(process.env);
     }
   } else {
     if (erro) console.log("Erro ao iniciar o servidor!");
