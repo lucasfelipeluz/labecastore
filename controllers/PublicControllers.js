@@ -103,6 +103,8 @@ class PublicControllers {
       if (!category)
         return Responses.badRequest(res, "Categoria não encontrada");
 
+      const nameCategory = category.name;
+
       const categories = await ProductsCategories(connectionOption).findAll({
         where: {
           categoryId: category.id,
@@ -134,7 +136,7 @@ class PublicControllers {
             })
           );
 
-          return { ...product.dataValues, images };
+          return { ...product.dataValues, images, nameCategory };
         })
       );
 
