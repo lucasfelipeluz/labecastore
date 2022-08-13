@@ -110,12 +110,12 @@ const productPublicFilters = (connectionOption, req) => {
     filters.where["id"] = id;
   }
   if (category) {
-    filters.where["$categories.id$"] = category;
+    filters.where["$categories.id$"] = parseInt(category);
   }
   if (image) {
     filters.where["$images.id$"] = image;
   }
-
+  console.log(filters);
   return filters;
 };
 

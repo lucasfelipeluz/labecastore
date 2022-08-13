@@ -6,6 +6,8 @@ const Database = require("../databases/database");
 
 const { productPublicFilters, categoriesFilters } = require("../utils/filters");
 const S3Storage = require("../services/aws/S3Storage");
+const ProductsCategories = require("../models/ProductsCategories");
+const ProductsImages = require("../models/ProductsImages");
 
 // Classe responsável pelo serviços da Administradores
 class PublicControllers {
@@ -84,6 +86,52 @@ class PublicControllers {
       );
 
       return Responses.success(res, categories);
+    } catch (error) {
+      console.log(error);
+      return Responses.internalServerError(res, error);
+    }
+  }
+
+  async productsByCategoryId(req, res) {
+    try {
+      const connectionOption = Database.getConnectionOptions();
+
+      const categories = await ProductsCategories(connectionOption).findAll({
+        where: {
+          categoryId: req.params.id,
+        },
+      });
+
+      const products = await Promise.all(
+        categories.map(async (category) => {
+          const product = await Products(connectionOption).findOne({
+            where: { id: category.productId },
+          });
+
+          const productImages = await ProductsImages(connectionOption).findAll({
+            where: { productId: product.id },
+          });
+
+          const images = await Promise.all(
+            productImages.map(async (productImage) => {
+              const image = await Images(connectionOption).findOne({
+                where: { id: productImage.imageId },
+                attributes: { exclude: ["updatedAt", "createdAt"] },
+              });
+
+              let folder = image.main === true ? "main" : "geral";
+
+              const base64 = await S3Storage.GetObject(folder, image.filename);
+
+              return { ...image.dataValues, base64 };
+            })
+          );
+
+          return { ...product.dataValues, images };
+        })
+      );
+
+      return Responses.success(res, products);
     } catch (error) {
       console.log(error);
       return Responses.internalServerError(res, error);
