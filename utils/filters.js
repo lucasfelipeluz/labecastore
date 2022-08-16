@@ -115,7 +115,7 @@ const productPublicFilters = (connectionOption, req) => {
   if (image) {
     filters.where["$images.id$"] = image;
   }
-  console.log(filters);
+
   return filters;
 };
 
