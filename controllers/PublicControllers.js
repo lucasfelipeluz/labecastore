@@ -140,7 +140,7 @@ class PublicControllers {
         })
       );
 
-      return Responses.success(res, products);
+      return Responses.success(res, products, category);
     } catch (error) {
       console.log(error);
       return Responses.internalServerError(res, error);
