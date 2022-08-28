@@ -1,8 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
-const Categories = require("./Categories");
-const Images = require("./Images");
-const ProductsCategories = require("./ProductsCategories");
-const ProductsImages = require("./ProductsImages");
+const { Model, DataTypes } = require('sequelize');
+const Categories = require('./Categories');
+const Images = require('./Images');
+const ProductsCategories = require('./ProductsCategories');
+const ProductsImages = require('./ProductsImages');
 
 module.exports = (connectionOption) => {
   class Products extends Model {}
@@ -60,25 +60,25 @@ module.exports = (connectionOption) => {
       createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: "users", key: "id" },
+        references: { model: 'users', key: 'id' },
       },
       updatedBy: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: { model: "users", key: "id" },
+        references: { model: 'users', key: 'id' },
       },
     },
     {
       sequelize: connectionOption,
-      modelName: "products",
+      modelName: 'products',
       timestamps: true,
-    }
+    },
   );
   Products.belongsToMany(Categories(connectionOption), {
     through: {
       model: ProductsCategories(connectionOption),
     },
-    foreignKey: "productId",
+    foreignKey: 'productId',
     constraints: true,
   });
 
@@ -86,7 +86,7 @@ module.exports = (connectionOption) => {
     through: {
       model: ProductsCategories(connectionOption),
     },
-    foreignKey: "categoryId",
+    foreignKey: 'categoryId',
     constraints: true,
   });
 
@@ -94,15 +94,21 @@ module.exports = (connectionOption) => {
     through: {
       model: ProductsImages(connectionOption),
     },
-    foreignKey: "productId",
+    foreignKey: 'productId',
     constraints: true,
+  });
+
+  Products.belongsTo(Images(connectionOption), {
+    constraints: true,
+    foreignKey: 'id_img_main',
+    as: 'img_main',
   });
 
   Images(connectionOption).belongsToMany(Products, {
     through: {
       model: ProductsImages(connectionOption),
     },
-    foreignKey: "imageId",
+    foreignKey: 'imageId',
     constraints: true,
   });
 

@@ -1,11 +1,15 @@
 // Models
-const Categories = require("../models/Categories");
-const Products = require("../models/Products");
-const Images = require("../models/Images");
+const Categories = require('../models/Categories');
+const Images = require('../models/Images');
 
 const productFilters = (connectionOption, req) => {
-  const { active, year } = req.query;
+  const { active, year, limit } = req.query;
   const { id } = req.params;
+
+  let limitDefault = 20;
+  if (limit !== undefined) {
+    limitDefault = parseInt(limit);
+  }
 
   let filters = {
     include: [
@@ -15,19 +19,24 @@ const productFilters = (connectionOption, req) => {
       {
         model: Images(connectionOption),
       },
+      {
+        model: Images(connectionOption),
+        as: 'img_main',
+      },
     ],
     where: {},
-    order: [["id", "DESC"]],
+    order: [['id', 'DESC']],
+    limit: limitDefault,
   };
 
   if (active) {
-    filters.where["active"] = active === "true" ? true : false;
+    filters.where['active'] = active === 'true' ? true : false;
   }
   if (year) {
-    filters.where["year"] = year;
+    filters.where['year'] = year;
   }
   if (id) {
-    filters.where["id"] = id;
+    filters.where['id'] = id;
   }
 
   return filters;
@@ -38,17 +47,17 @@ const categoriesFilters = (connectionOption, req) => {
 
   let filters = {
     where: {},
-    order: [["id", "DESC"]],
+    order: [['id', 'DESC']],
   };
 
   if (active) {
-    filters.where["active"] = active === "true" ? true : false;
+    filters.where['active'] = active === 'true' ? true : false;
   }
   if (slug) {
-    filters.where["slug"] = slug;
+    filters.where['slug'] = slug;
   }
   if (id) {
-    filters.where["id"] = id;
+    filters.where['id'] = id;
   }
 
   return filters;
@@ -59,20 +68,20 @@ const imagesFilters = (connectionOption, req) => {
 
   let filters = {
     where: {},
-    order: [["id", "DESC"]],
+    order: [['id', 'DESC']],
   };
 
   if (active) {
-    filters.where["active"] = active === "true" ? true : false;
+    filters.where['active'] = active === 'true' ? true : false;
   }
   if (filename) {
-    filters.where["filename"] = filename;
+    filters.where['filename'] = filename;
   }
   if (id) {
-    filters.where["id"] = id;
+    filters.where['id'] = id;
   }
   if (main) {
-    filters.where["main"] = main === "true" ? true : false;
+    filters.where['main'] = main === 'true' ? true : false;
   }
 
   return filters;
@@ -94,26 +103,30 @@ const productPublicFilters = (connectionOption, req) => {
       {
         model: Images(connectionOption),
       },
+      {
+        model: Images(connectionOption),
+        as: 'img_main',
+      },
     ],
     where: {},
-    order: [["id", "DESC"]],
+    order: [['id', 'DESC']],
     limit: limitDefault,
   };
 
   if (active) {
-    filters.where["active"] = active === "true" ? true : false;
+    filters.where['active'] = active === 'true' ? true : false;
   }
   if (year) {
-    filters.where["year"] = year;
+    filters.where['year'] = year;
   }
   if (id) {
-    filters.where["id"] = id;
+    filters.where['id'] = id;
   }
   if (category) {
-    filters.where["$categories.id$"] = parseInt(category);
+    filters.where['$categories.id$'] = parseInt(category);
   }
   if (image) {
-    filters.where["$images.id$"] = image;
+    filters.where['$images.id$'] = image;
   }
 
   return filters;
