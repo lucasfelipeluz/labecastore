@@ -1,15 +1,15 @@
-require("dotenv").config();
-const path = require("path");
-const fs = require("fs");
-const mime = require("mime");
-const aws = require("aws-sdk");
+require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
+const mime = require('mime');
+const aws = require('aws-sdk');
 
 const accessKeyId = process.env.aws_access_key_id;
 const secretAccessKey = process.env.aws_secret_access_key;
 const bucketName = process.env.aws_bucket_name;
 const region = process.env.aws_region;
 
-const uploadConfig = require("../../config/upload");
+const uploadConfig = require('../../config/upload');
 
 class S3Storage {
   constructor() {
@@ -18,6 +18,10 @@ class S3Storage {
       accessKeyId,
       secretAccessKey,
     });
+  }
+
+  getUrlImage(folder, filename) {
+    return `https://${bucketName}.s3.${region}.amazonaws.com/${folder}/${filename}`;
   }
 
   // Todos Objetos
@@ -44,7 +48,7 @@ class S3Storage {
         })
         .promise();
 
-      return { status: true, data: responseAWS.Body.toString("base64") };
+      return { status: true, data: responseAWS.Body.toString('base64') };
     } catch (error) {
       return { status: false, error: error.message };
     }
@@ -53,14 +57,14 @@ class S3Storage {
   // Enviando
   async saveFile(base64, folder, filename) {
     try {
-      const buffer = Buffer.from(base64, "base64");
+      const buffer = Buffer.from(base64, 'base64');
 
       fs.writeFileSync(`${uploadConfig.directory}/${filename}`, buffer);
       const originalPath = path.resolve(uploadConfig.directory, filename);
       const contentyType = mime.getType(originalPath);
 
       if (!contentyType) {
-        throw new Error("Erro em lidar com os arquivos");
+        throw new Error('Erro em lidar com os arquivos');
       }
 
       const fileContent = await fs.promises.readFile(originalPath);
@@ -87,7 +91,7 @@ class S3Storage {
     try {
       await this.client
         .deleteObject({
-          Bucket: process.env.aws_bucket_name,
+          Bucket: bucketName,
           Key: `${folder}/${filename}`,
         })
         .promise();

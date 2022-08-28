@@ -1,8 +1,70 @@
-const Products = require("../../models/Products");
-const Responses = require("../../utils/Responses");
-const Database = require("../../databases/database");
+const S3Storage = require('../../services/aws/S3Storage');
 
-const { productFilters } = require("../../utils/filters");
+const Products = require('../../models/Products');
+const Responses = require('../../utils/Responses');
+const Database = require('../../databases/database');
+const { productFilters } = require('../../utils/filters');
+const slugify = require('slugify');
+const Images = require('../../models/Images');
+
+const uploadImgMain = async (connectionOption, req, base64) => {
+  const infoImage = await Images(connectionOption).create({
+    filename: '',
+    url: '',
+    main: true,
+    active: true,
+    createdBy: req.user.id,
+  });
+
+  const shirtName = slugify(req.body.title).toLowerCase();
+  const keyword = 'main';
+  const filename = `${infoImage.id}_${shirtName}_${req.body.year}_${keyword}.png`;
+  const url = S3Storage.getUrlImage('main', filename);
+
+  const image = await infoImage.update({ filename, url });
+
+  const { status } = await S3Storage.saveFile(base64, 'main', filename);
+
+  if (!status) {
+    await infoImage.update({ active: false });
+  }
+
+  return image;
+};
+
+const updateImgMain = async (connectionOption, req, base64, product) => {
+  const imgAntiga = await Images(connectionOption).findOne({
+    where: { id: product.id_img_main },
+  });
+
+  const infoImage = await Images(connectionOption).create({
+    filename: '',
+    url: '',
+    main: true,
+    active: true,
+    createdBy: req.user.id,
+  });
+
+  const shirtName = slugify(product.title).toLowerCase();
+  const keyword = 'main';
+  const filename = `${infoImage.id}_${shirtName}_${product.year}_${keyword}.png`;
+  const url = S3Storage.getUrlImage('main', filename);
+
+  const image = await infoImage.update({ filename, url });
+
+  const { status } = await S3Storage.saveFile(base64, 'main', filename);
+
+  if (imgAntiga && status) {
+    await imgAntiga.update({ active: false });
+    await S3Storage.deleteFile('main', imgAntiga.filename);
+  }
+  if (imgAntiga && !status) {
+    await infoImage.update({ active: false });
+    return { status: false };
+  }
+
+  return { status: true, image };
+};
 
 // Classe responsável pelo servições da rota admin/products
 class ProductsController {
@@ -12,13 +74,13 @@ class ProductsController {
       const connectionOption = Database.getConnectionOptions();
 
       const helpRoutes = [
-        "GET/admin/products",
-        "POST/admin/products",
-        "PUT/admin/products/:id",
-        "DELETE/admin/products/:id",
+        'GET/admin/products',
+        'POST/admin/products',
+        'PUT/admin/products/:id',
+        'DELETE/admin/products/:id',
       ];
       const responseFindAllProducts = await Products(connectionOption).findAll(
-        productFilters(connectionOption, req)
+        productFilters(connectionOption, req),
       );
 
       return Responses.success(res, responseFindAllProducts, {
@@ -36,7 +98,7 @@ class ProductsController {
       const connectionOption = Database.getConnectionOptions();
 
       const responseProduct = await Products(connectionOption).findOne(
-        productFilters(connectionOption, req)
+        productFilters(connectionOption, req),
       );
 
       return Responses.success(res, responseProduct);
@@ -64,25 +126,28 @@ class ProductsController {
         inventoryEG,
         inventoryEGG,
         year,
+        base64_main,
       } = req.body;
 
       // Verificando se campos foram preenchidos.
       // Inventory, description, categoryId e ImageId não é obrigatório
       if (title === undefined || price === undefined || year === undefined) {
-        return Responses.badRequest(
-          res,
-          "Title, price ou year podem não esta sendo enviados!"
-        );
+        return Responses.badRequest(res, 'Title, price ou year podem não esta sendo enviados!');
       }
-      if (title === null || title === "") {
-        return Responses.badRequest(res, "Tìtulo do produto é obrigatório");
+      if (title === null || title === '') {
+        return Responses.badRequest(res, 'Tìtulo do produto é obrigatório');
       }
-      if (price === null || price === "" || price === 0) {
-        return Responses.badRequest(res, "Preço do produto é obrigatório");
+      if (price === null || price === '' || price === 0) {
+        return Responses.badRequest(res, 'Preço do produto é obrigatório');
       }
-      if (year === null || year === "" || year === "0") {
-        return Responses.badRequest(res, "Ano do produto é obrigatório");
+      if (year === null || year === '' || year === '0') {
+        return Responses.badRequest(res, 'Ano do produto é obrigatório');
       }
+      if (!base64_main) {
+        return Responses.badRequest(res, 'A imagem principal é obrigatória');
+      }
+
+      const image = await uploadImgMain(connectionOption, req, base64_main);
 
       const dataForAdd = {
         id,
@@ -99,11 +164,10 @@ class ProductsController {
         year,
         active: false,
         createdBy: req.user.id,
+        id_img_main: image.id,
       };
 
-      const responseCreateProducts = await Products(connectionOption).create(
-        dataForAdd
-      );
+      const responseCreateProducts = await Products(connectionOption).create(dataForAdd);
 
       return Responses.created(res, responseCreateProducts);
     } catch (error) {
@@ -116,6 +180,14 @@ class ProductsController {
   async update(req, res) {
     try {
       const connectionOption = Database.getConnectionOptions();
+
+      const { id } = req.params;
+
+      const product = await Products(connectionOption).findOne({ where: { id } });
+
+      if (!product) {
+        return Responses.badRequest(res, 'Produto não encontrado!');
+      }
 
       const {
         title,
@@ -130,12 +202,16 @@ class ProductsController {
         inventoryEGG,
         year,
         active,
+        base64_main,
       } = req.body;
-      const { id } = req.params;
-      console.log(req.body);
 
-      const responseUpdateDatabase = await Products(connectionOption).update(
-        {
+      if (base64_main) {
+        const { status, image } = await updateImgMain(connectionOption, req, base64_main, product);
+        if (!status) {
+          return Responses.internalServerError(res, 'Erro em atualizar as imagens');
+        }
+
+        product.update({
           title,
           description,
           price,
@@ -147,18 +223,31 @@ class ProductsController {
           inventoryEG,
           inventoryEGG,
           year,
-          active,
+          active: active,
+          id_img_main: image.id,
           updatedBy: req.user.id,
-        },
-        {
-          where: {
-            id,
-          },
-        }
-      );
+        });
 
-      // Success
-      return Responses.success(res);
+        return Responses.success(res, product);
+      }
+
+      product.update({
+        title,
+        description,
+        price,
+        inventoryPP,
+        inventoryP,
+        inventoryM,
+        inventoryG,
+        inventoryGG,
+        inventoryEG,
+        inventoryEGG,
+        year,
+        active: active,
+        updatedBy: req.user.id,
+      });
+
+      return Responses.success(res, product);
     } catch (error) {
       console.log(error);
       return Responses.internalServerError(res, error);
@@ -173,15 +262,8 @@ class ProductsController {
       const { id } = req.params;
 
       await Products(connectionOption).update(
-        {
-          active: false,
-          updatedBy: req.user.id,
-        },
-        {
-          where: {
-            id,
-          },
-        }
+        { active: false, uptadedBy: req.user.id },
+        { where: { id } },
       );
 
       return Responses.success(res);

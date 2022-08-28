@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const Products = require("./Products");
 
 module.exports = (connectionOption) => {
   class ProductsCategories extends Model {}

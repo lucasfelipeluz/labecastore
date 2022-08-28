@@ -1,10 +1,10 @@
-const slugify = require("slugify");
+const slugify = require('slugify');
 
-const Categories = require("../../models/Categories");
-const Responses = require("../../utils/Responses");
-const Database = require("../../databases/database");
+const Categories = require('../../models/Categories');
+const Responses = require('../../utils/Responses');
+const Database = require('../../databases/database');
 
-const { categoriesFilters } = require("../../utils/filters");
+const { categoriesFilters } = require('../../utils/filters');
 
 // Classe responsável pelo serviços da rota admin/categories
 class CategoriesController {
@@ -13,14 +13,14 @@ class CategoriesController {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const responseFindAllCategories = await Categories(
-        connectionOption
-      ).findAll(categoriesFilters(connectionOption, req));
+      const responseFindAllCategories = await Categories(connectionOption).findAll(
+        categoriesFilters(connectionOption, req),
+      );
 
       const helpRoutes = [
-        "POST/admin/categories",
-        "PUT/admin/categories/:id",
-        "DEL/admin/categories/:id",
+        'POST/admin/categories',
+        'PUT/admin/categories/:id',
+        'DEL/admin/categories/:id',
       ];
 
       // No Content
@@ -47,11 +47,11 @@ class CategoriesController {
 
       // Bad Request
       if (name === undefined) {
-        const msgError = "Name não esta sendo enviado!";
+        const msgError = 'Name não esta sendo enviado!';
         return Responses.badRequest(res, msgError, {}, {});
       }
-      if (name === "" || name === null) {
-        return Responses.badRequest(res, "O nome da categoria é obrigatório.");
+      if (name === '' || name === null) {
+        return Responses.badRequest(res, 'O nome da categoria é obrigatório.');
       }
 
       const responseCreateCategory = await Categories(connectionOption).create({
@@ -78,17 +78,11 @@ class CategoriesController {
 
       // Bad Request
       if (name === undefined || id === undefined) {
-        return Responses.badRequest(
-          res,
-          "Name ou Id não estão sendo enviados!"
-        );
+        return Responses.badRequest(res, 'Name ou Id não estão sendo enviados!');
       }
 
-      if (name === "" || name === null) {
-        return Responses.notAcceptable(
-          res,
-          "O nome da categoria é obrigatório."
-        );
+      if (name === '' || name === null) {
+        return Responses.notAcceptable(res, 'O nome da categoria é obrigatório.');
       }
 
       await Categories(connectionOption).update(
@@ -102,7 +96,7 @@ class CategoriesController {
           where: {
             id,
           },
-        }
+        },
       );
 
       return Responses.success(res);
@@ -128,12 +122,12 @@ class CategoriesController {
           where: {
             id,
           },
-        }
+        },
       );
 
       // Bad Request
       if (response.status === null) {
-        return Responses.badRequest(res, {}, {}, "Categoria não encontrada");
+        return Responses.badRequest(res, {}, {}, 'Categoria não encontrada');
       }
 
       return Responses.success(res, response.data);

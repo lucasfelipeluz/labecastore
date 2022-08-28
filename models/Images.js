@@ -1,10 +1,14 @@
-const { Model, DataTypes } = require("sequelize");
+const { Model, DataTypes } = require('sequelize');
 
 module.exports = (connectionOption) => {
   class Images extends Model {}
   Images.init(
     {
       filename: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      url: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -20,19 +24,14 @@ module.exports = (connectionOption) => {
       createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: "users", key: "id" },
-      },
-      id_product: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: { model: "products", key: "id" },
+        references: { model: 'users', key: 'id' },
       },
     },
     {
       sequelize: connectionOption,
-      modelName: "images",
+      modelName: 'images',
       timestamps: true,
-    }
+    },
   );
   return Images;
 };
