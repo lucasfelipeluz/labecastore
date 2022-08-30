@@ -1,13 +1,13 @@
 /* Importando variáveis de ambiente */
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-const yaml = require("yamljs");
-const swaggerUi = require("swagger-ui-express");
+const express = require('express');
+const yaml = require('yamljs');
+const swaggerUi = require('swagger-ui-express');
 
-const cors = require("cors");
+const cors = require('cors');
 
-const router = require("./routes/routes");
+const router = require('./routes/routes');
 
 const app = express();
 
@@ -15,29 +15,29 @@ const app = express();
 app.use(cors());
 
 // Body Parser
-app.use(express.urlencoded({ limit: "200mb", extended: false }));
-app.use(express.json({ limit: "200mb" }));
-app.use(express.text({ limit: "200mb" }));
+app.use(express.urlencoded({ limit: '200mb', extended: false }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.text({ limit: '200mb' }));
 
 // Swagger
-if (process.env.server_mode == "dev") {
-  const swaggerYAML = yaml.load("./docs/swagger.yaml");
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerYAML));
+if (process.env.server_mode == 'dev') {
+  const swaggerYAML = yaml.load('./docs/swagger.yaml');
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerYAML));
 }
 
 // Usando Rotas
-app.use("/", router);
+app.use('/', router);
 
 /* Iniciando Server */
 const PORT = process.env.PORT || 5000;
 app.listen(process.env.PORT || 5000, (erro) => {
-  if (process.env.server_mode == "dev") {
-    if (erro) console.log("Erro ao iniciar o servidor!");
+  if (process.env.server_mode == 'dev') {
+    if (erro) console.log('Erro ao iniciar o servidor!');
     else {
       console.log(`Development server running in port: ${PORT}`);
     }
   } else {
-    if (erro) console.log("Erro ao iniciar o servidor!");
+    if (erro) console.log('Erro ao iniciar o servidor!');
     else {
       console.log(`Server running in port: ${PORT}`);
     }

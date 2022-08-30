@@ -1,21 +1,20 @@
-const express = require("express");
+const express = require('express');
 
-const Responses = require("../utils/Responses");
+const Responses = require('../utils/Responses');
 
 const router = express.Router();
 
 // Importando e usando rotas
-const routerAdmin = require("./router.admin");
-const routerPublic = require("./router.public");
+const routerAdmin = require('./router.admin');
+const routerPublic = require('./router.public');
 
-router.use("/admin", routerAdmin);
-router.use("/", routerPublic);
+router.use('/admin', routerAdmin);
+router.use('/', routerPublic);
 
 // Caso não encontre nenhuma rota, retornará NotFound
-router.get("*", (req, res) => {
-  const helpRoutes = ["GET/admin/login", "GET/products", "GET/categories"];
-
-  return Responses.notFound(res, "Rota não encontrada", [], { helpRoutes });
+router.get('*', (req, res) => {
+  const helpRoutes = ['GET/admin/login', 'GET/products', 'GET/categories'];
+  return Responses.notFound(res, 'Rota não encontrada', [], { helpRoutes });
 });
 
 module.exports = router;

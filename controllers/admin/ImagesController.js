@@ -21,7 +21,7 @@ const uploadImages = async (connectionOption, req, product, img) => {
   const shirtName = slugify(product.title).toLowerCase();
   const keyword = 'geral';
   const filename = `${image.id}_${shirtName}_${product.year}_${keyword}.png`;
-  const url = S3Storage.getUrlImage('main', filename);
+  const url = S3Storage.getUrlImage('geral', filename);
 
   await image.update({ filename, url });
   const { status: statusAWS } = await S3Storage.saveFile(img, 'geral', filename);
