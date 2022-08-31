@@ -1,11 +1,30 @@
 const S3Storage = require('../../services/aws/S3Storage');
 
 const Products = require('../../models/Products');
+const ProductsImages = require('../../models/ProductsImages');
 const Responses = require('../../utils/Responses');
 const Database = require('../../databases/database');
 const { productFilters } = require('../../utils/filters');
 const slugify = require('slugify');
 const Images = require('../../models/Images');
+
+const addRelationship = async (connectionOption, product, image) => {
+  await ProductsImages(connectionOption).create({
+    productId: product.id,
+    imageId: image.id,
+  });
+};
+
+const updateRelationship = async (connectionOption, product, newImage, oldImage) => {
+  const oldRelationship = await ProductsImages(connectionOption).findOne({
+    where: {
+      productId: product.id,
+      imageId: oldImage.id,
+    },
+  });
+
+  await oldRelationship.update({ productId: product.id, imageId: newImage.id });
+};
 
 const uploadImgMain = async (connectionOption, req, base64) => {
   const infoImage = await Images(connectionOption).create({
@@ -57,6 +76,7 @@ const updateImgMain = async (connectionOption, req, base64, product) => {
   if (imgAntiga && status) {
     await imgAntiga.update({ active: false });
     await S3Storage.deleteFile('main', imgAntiga.filename);
+    await updateRelationship(connectionOption, product, image, imgAntiga);
   }
   if (imgAntiga && !status) {
     await infoImage.update({ active: false });
@@ -114,7 +134,6 @@ class ProductsController {
       const connectionOption = Database.getConnectionOptions();
 
       const {
-        id,
         title,
         description,
         price,
@@ -150,7 +169,6 @@ class ProductsController {
       const image = await uploadImgMain(connectionOption, req, base64_main);
 
       const dataForAdd = {
-        id,
         title,
         description,
         price,
@@ -168,6 +186,8 @@ class ProductsController {
       };
 
       const responseCreateProducts = await Products(connectionOption).create(dataForAdd);
+
+      await addRelationship(connectionOption, responseCreateProducts.dataValues, image);
 
       return Responses.created(res, responseCreateProducts);
     } catch (error) {

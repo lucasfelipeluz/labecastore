@@ -5,7 +5,6 @@ const Responses = require('../utils/Responses');
 const Database = require('../databases/database');
 
 const { productPublicFilters, categoriesFilters } = require('../utils/filters');
-const S3Storage = require('../services/aws/S3Storage');
 const ProductsCategories = require('../models/ProductsCategories');
 const ProductsImages = require('../models/ProductsImages');
 
@@ -19,7 +18,7 @@ class PublicControllers {
         productPublicFilters(connectionOption, req),
       );
 
-      return Responses.created(res, products);
+      return Responses.success(res, products);
     } catch (error) {
       console.log(error);
       return Responses.internalServerError(res, error);
