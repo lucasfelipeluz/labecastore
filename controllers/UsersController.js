@@ -1,8 +1,8 @@
-const Users = require("../models/Users");
-const Responses = require("../utils/Responses");
-const Encrypting = require("../utils/Encrypting");
-const jwt = require("jsonwebtoken");
-const Database = require("../databases/database");
+const Users = require('../models/Users');
+const Responses = require('../utils/Responses');
+const Encrypting = require('../utils/Encrypting');
+const jwt = require('jsonwebtoken');
+const Database = require('../databases/database');
 
 const secretKey = process.env.secret_key;
 
@@ -17,7 +17,7 @@ class UsersControllers {
       if (!name || !nickname || !password) {
         return Responses.badRequest(
           res,
-          "Certifique-se que está passando o nome, nickname e senha"
+          'Certifique-se que está passando o nome, nickname e senha',
         );
       }
 
@@ -25,7 +25,7 @@ class UsersControllers {
         where: { nickname },
       });
       if (responseRepeatNickname) {
-        return Responses.notAcceptable(res, "Nickname já existe");
+        return Responses.notAcceptable(res, 'Nickname já existe');
       }
 
       const hashPassword = await Encrypting.textToHash(password);
@@ -51,10 +51,7 @@ class UsersControllers {
       const { nickname, password } = req.body;
 
       if (!nickname || !password) {
-        return Responses.badRequest(
-          res,
-          "Certifique-se que está passando o nickname e senha"
-        );
+        return Responses.badRequest(res, 'Certifique-se que está passando o nickname e senha');
       }
 
       const user = await Users(connectionOption).findOne({
@@ -62,21 +59,19 @@ class UsersControllers {
       });
 
       if (!user) {
-        return Responses.unauthenticated(res, "Usuário não existe!");
+        return Responses.unauthenticated(res, 'Usuário não existe!');
       }
       if (user.active < 1) {
-        return Responses.forbidden(res, "Usuário ainda não foi aprovado!");
+        return Responses.forbidden(res, 'Usuário ainda não foi aprovado!');
       }
 
       if (!(await Encrypting.comparing(user.password, password))) {
-        return Responses.unauthenticated(res, "Senha incorreta");
+        return Responses.unauthenticated(res, 'Senha incorreta');
       }
 
-      const token = jwt.sign(
-        { id: user.id, nickname, role: user.role },
-        secretKey,
-        { expiresIn: "5m" }
-      );
+      const token = jwt.sign({ id: user.id, nickname, role: user.role }, secretKey, {
+        expiresIn: '1h',
+      });
 
       return Responses.success(res, token);
     } catch (error) {
@@ -92,10 +87,7 @@ class UsersControllers {
       const { nickname, oldPassword, newPassword } = req.body;
 
       if (!nickname || !oldPassword || !newPassword) {
-        return Responses.badRequest(
-          res,
-          "Certifique-se que está a antiga senha e a nova senha"
-        );
+        return Responses.badRequest(res, 'Certifique-se que está a antiga senha e a nova senha');
       }
 
       const user = await Users(connectionOption).findOne({
@@ -103,14 +95,14 @@ class UsersControllers {
       });
 
       if (!user) {
-        return Responses.unauthenticated(res, "Usuário não existe!");
+        return Responses.unauthenticated(res, 'Usuário não existe!');
       }
       if (user.active < 1) {
-        return Responses.forbidden(res, "Usuário ainda não foi aprovado!");
+        return Responses.forbidden(res, 'Usuário ainda não foi aprovado!');
       }
 
       if (!(await Encrypting.comparing(user.password, oldPassword))) {
-        return Responses.unauthenticated(res, "Senha incorreta");
+        return Responses.unauthenticated(res, 'Senha incorreta');
       }
 
       const hashNewPassword = await Encrypting.textToHash(newPassword);
@@ -123,7 +115,7 @@ class UsersControllers {
           where: {
             nickname,
           },
-        }
+        },
       );
 
       return Responses.success(res);
@@ -160,22 +152,16 @@ class UsersControllers {
       const userLoggedIn = req.user;
 
       if (userLoggedIn.role < 4) {
-        return Responses.forbidden(
-          res,
-          "Você não tem permissão para autorizar usuários!"
-        );
+        return Responses.forbidden(res, 'Você não tem permissão para autorizar usuários!');
       }
 
       const { nickname } = req.body;
 
       if (!nickname) {
-        return Responses.badRequest(res, "Certifique-se de passar o nickname");
+        return Responses.badRequest(res, 'Certifique-se de passar o nickname');
       }
 
-      await Users(connectionOption).update(
-        { active: 1 },
-        { where: { nickname } }
-      );
+      await Users(connectionOption).update({ active: 1 }, { where: { nickname } });
 
       return Responses.success(res);
     } catch (error) {
@@ -191,7 +177,7 @@ class UsersControllers {
       const { nickname } = req.body;
 
       if (!nickname) {
-        return Responses.badRequest(res, "Certifique-se de passar o nickname");
+        return Responses.badRequest(res, 'Certifique-se de passar o nickname');
       }
 
       const user = await Users(connectionOption).findOne({
@@ -199,16 +185,13 @@ class UsersControllers {
       });
 
       if (!user) {
-        return Responses.unauthenticated(res, "Usuário não existe!");
+        return Responses.unauthenticated(res, 'Usuário não existe!');
       }
       if (user.active < 1) {
-        return Responses.forbidden(res, "Usuário ainda não foi aprovado!");
+        return Responses.forbidden(res, 'Usuário ainda não foi aprovado!');
       }
 
-      await Users(connectionOption).update(
-        { active: 0 },
-        { where: { nickname } }
-      );
+      await Users(connectionOption).update({ active: 0 }, { where: { nickname } });
 
       return Responses.success(res);
     } catch (error) {
