@@ -101,6 +101,76 @@ class PublicControllers {
       return Responses.internalServerError(res, error);
     }
   }
+
+  async search(req, res) {
+    try {
+      const connectionOption = Database.getConnectionOptions();
+      const { keyword } = req.params;
+
+      const allProducts = await Products(connectionOption).findAll({
+        include: [
+          {
+            model: Categories(connectionOption),
+          },
+          {
+            model: Images(connectionOption),
+          },
+          {
+            model: Images(connectionOption),
+            as: 'img_main',
+          },
+        ],
+        where: { active: true },
+      });
+
+      const allCategories = await Categories(connectionOption).findAll({
+        where: {
+          active: true,
+        },
+      });
+
+      let products = [];
+      let categories = [];
+
+      // Pesquisando pelo nome
+      const filteredProducts = allProducts.filter((product) => {
+        let shirtTitle = product.title.toLowerCase();
+        if (shirtTitle.includes(keyword.toLowerCase())) {
+          return product;
+        }
+      });
+      if (filteredProducts.length < 1) {
+        const newFilteredProducts = allProducts.filter((product) => {
+          for (let category of product.categories) {
+            let categoryName = category.dataValues.slug;
+            if (categoryName.includes(keyword)) return product;
+          }
+        });
+
+        products = newFilteredProducts;
+      } else {
+        products = filteredProducts;
+      }
+
+      // Pesquisando a categoria pelo nome
+      categories = allCategories.filter((category) => {
+        let nameCategory = category.slug;
+        if (nameCategory.includes(keyword.toLowerCase())) {
+          return category;
+        }
+      });
+
+      const data = {
+        products,
+        categories,
+      };
+
+      return Responses.success(res, data);
+    } catch (error) {
+      console.log(error);
+      return Responses.internalServerError(res, error);
+    }
+  }
 }
 
 module.exports = new PublicControllers();
