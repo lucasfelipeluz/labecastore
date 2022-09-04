@@ -70,7 +70,7 @@ class UsersControllers {
       }
 
       const token = jwt.sign({ id: user.id, nickname, role: user.role }, secretKey, {
-        expiresIn: '1h',
+        expiresIn: '10s',
       });
 
       return Responses.success(res, token);
@@ -144,6 +144,37 @@ class UsersControllers {
     // if (responseUpdatePassword === false ) return Responses.internalServerError(res)
 
     // return Responses.success(res);
+  }
+
+  async checkUser(req, res) {
+    try {
+      const token = req.body.token;
+
+      let data = {
+        valid: false,
+        role: 0,
+      };
+
+      jwt.verify(token, secretKey, {}, (error, decoded) => {
+        if (error) {
+          data = {
+            valid: false,
+            role: 0,
+          };
+        }
+        if (decoded) {
+          data = {
+            valid: true,
+            role: decoded.role,
+          };
+        }
+      });
+
+      return Responses.success(res, data);
+    } catch (error) {
+      console.log(error);
+      return Responses.internalServerError(res, error);
+    }
   }
 
   async authorizeUser(req, res) {
