@@ -70,7 +70,7 @@ class UsersControllers {
       }
 
       const token = jwt.sign({ id: user.id, nickname, role: user.role }, secretKey, {
-        expiresIn: '10s',
+        expiresIn: '1h',
       });
 
       return Responses.success(res, token);
