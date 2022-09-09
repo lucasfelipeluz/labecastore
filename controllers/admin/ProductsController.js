@@ -7,6 +7,7 @@ const Database = require('../../databases/database');
 const { productFilters } = require('../../utils/filters');
 const slugify = require('slugify');
 const Images = require('../../models/Images');
+const ProductsCategories = require('../../models/ProductsCategories');
 
 const addRelationship = async (connectionOption, product, image) => {
   await ProductsImages(connectionOption).create({
@@ -281,10 +282,11 @@ class ProductsController {
 
       const { id } = req.params;
 
-      await Products(connectionOption).update(
-        { active: false, uptadedBy: req.user.id },
-        { where: { id } },
-      );
+      await Products(connectionOption).destroy({ where: { id } });
+
+      await ProductsCategories(connectionOption).destroy({ where: { productId: id } });
+
+      await ProductsImages(connectionOption).destroy({ where: { productId: id } });
 
       return Responses.success(res);
     } catch (error) {

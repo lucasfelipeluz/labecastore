@@ -1,8 +1,4 @@
 const express = require('express');
-const multer = require('multer');
-
-/* Importando Configurações do Upload */
-const uploadConfig = require('../config/upload');
 
 /* Importando Controllers */
 const UsersController = require('../controllers/UsersController');
@@ -14,9 +10,6 @@ const AWSController = require('../controllers/admin/AWSController');
 const AdminAuth = require('../middleware/AdminAuth');
 
 const router = express.Router();
-
-/* Configurando e usando o Multer */
-const upload = multer(uploadConfig);
 
 // Login Admin
 router.post('/login', UsersController.login);
