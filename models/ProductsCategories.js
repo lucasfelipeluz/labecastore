@@ -1,5 +1,4 @@
-const { Model, DataTypes } = require("sequelize");
-const Products = require("./Products");
+const { Model, DataTypes } = require('sequelize');
 
 module.exports = (connectionOption) => {
   class ProductsCategories extends Model {}
@@ -16,9 +15,9 @@ module.exports = (connectionOption) => {
     },
     {
       sequelize: connectionOption,
-      modelName: "products_categories",
+      modelName: 'products_categories',
       timestamps: false,
-    }
+    },
   );
   return ProductsCategories;
 };

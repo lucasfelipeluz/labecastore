@@ -193,6 +193,20 @@ class ProductsController {
 
       await addRelationship(connectionOption, responseCreateProducts.dataValues, image);
 
+      if (req.body.categories.length > 0) {
+        console.log('categories');
+        const categories = req.body.categories;
+
+        await Promise.all(
+          categories.map(async (item) => {
+            await ProductsCategories(connectionOption).create({
+              productId: responseCreateProducts.id,
+              categoryId: item,
+            });
+          }),
+        );
+      }
+
       return Responses.created(res, responseCreateProducts);
     } catch (error) {
       console.log(error);

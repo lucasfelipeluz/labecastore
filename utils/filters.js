@@ -143,9 +143,60 @@ const productPublicFilters = (connectionOption, req) => {
   return filters;
 };
 
+const productPublicMoreAcessFilters = (connectionOption, req) => {
+  const { id, active, year, category, image, limit } = req.query;
+
+  let limitDefault = 20;
+  if (limit !== undefined) {
+    limitDefault = parseInt(limit);
+  }
+
+  let filters = {
+    include: [
+      {
+        model: Categories(connectionOption),
+      },
+      {
+        model: Images(connectionOption),
+      },
+      {
+        model: Images(connectionOption),
+        as: 'img_main',
+      },
+      {
+        model: HitsProducts(connectionOption),
+        as: 'hits',
+        attributes: { exclude: ['id', 'id_product'] },
+      },
+    ],
+    where: {},
+    order: [[{ model: HitsProducts(connectionOption), as: 'hits' }, 'number_of_hits', 'DESC']],
+    limit: limitDefault,
+  };
+
+  if (active) {
+    filters.where['active'] = active === 'true' ? true : false;
+  }
+  if (year) {
+    filters.where['year'] = year;
+  }
+  if (id) {
+    filters.where['id'] = id;
+  }
+  if (category) {
+    filters.where['$categories.id$'] = parseInt(category);
+  }
+  if (image) {
+    filters.where['$images.id$'] = image;
+  }
+
+  return filters;
+};
+
 module.exports = {
   productFilters,
   categoriesFilters,
   imagesFilters,
   productPublicFilters,
+  productPublicMoreAcessFilters,
 };

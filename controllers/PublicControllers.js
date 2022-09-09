@@ -4,7 +4,11 @@ const Images = require('../models/Images');
 const Responses = require('../utils/Responses');
 const Database = require('../databases/database');
 
-const { productPublicFilters, categoriesFilters } = require('../utils/filters');
+const {
+  productPublicFilters,
+  categoriesFilters,
+  productPublicMoreAcessFilters,
+} = require('../utils/filters');
 const ProductsCategories = require('../models/ProductsCategories');
 const ProductsImages = require('../models/ProductsImages');
 const HitsProducts = require('../models/HitsProducts');
@@ -21,9 +25,16 @@ class PublicControllers {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const products = await Products(connectionOption).findAll(
-        productPublicFilters(connectionOption, req),
-      );
+      let products;
+      if (req.query.top === 'true') {
+        products = await Products(connectionOption).findAll(
+          productPublicMoreAcessFilters(connectionOption, req),
+        );
+      } else {
+        products = await Products(connectionOption).findAll(
+          productPublicFilters(connectionOption, req),
+        );
+      }
 
       if (req.query.id && products.length > 0) {
         await addOneView(connectionOption, req.query.id);
