@@ -8,6 +8,7 @@ const { productFilters } = require('../../utils/filters');
 const slugify = require('slugify');
 const Images = require('../../models/Images');
 const ProductsCategories = require('../../models/ProductsCategories');
+const HitsProducts = require('../../models/HitsProducts');
 
 const addRelationship = async (connectionOption, product, image) => {
   await ProductsImages(connectionOption).create({
@@ -188,6 +189,8 @@ class ProductsController {
 
       const responseCreateProducts = await Products(connectionOption).create(dataForAdd);
 
+      await HitsProducts(connectionOption).create({ id_product: responseCreateProducts.id });
+
       await addRelationship(connectionOption, responseCreateProducts.dataValues, image);
 
       return Responses.created(res, responseCreateProducts);
@@ -281,6 +284,8 @@ class ProductsController {
       const connectionOption = Database.getConnectionOptions();
 
       const { id } = req.params;
+
+      await HitsProducts(connectionOption).destroy({ where: { id_product: id } });
 
       await Products(connectionOption).destroy({ where: { id } });
 

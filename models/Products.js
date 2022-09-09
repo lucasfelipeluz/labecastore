@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const Categories = require('./Categories');
+const HitsProducts = require('./HitsProducts');
 const Images = require('./Images');
 const ProductsCategories = require('./ProductsCategories');
 const ProductsImages = require('./ProductsImages');
@@ -102,6 +103,12 @@ module.exports = (connectionOption) => {
     constraints: true,
     foreignKey: 'id_img_main',
     as: 'img_main',
+  });
+
+  Products.hasOne(HitsProducts(connectionOption), {
+    constraints: true,
+    foreignKey: 'id_product',
+    as: 'hits',
   });
 
   Images(connectionOption).belongsToMany(Products, {

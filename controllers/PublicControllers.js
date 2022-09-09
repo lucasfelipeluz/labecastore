@@ -7,6 +7,13 @@ const Database = require('../databases/database');
 const { productPublicFilters, categoriesFilters } = require('../utils/filters');
 const ProductsCategories = require('../models/ProductsCategories');
 const ProductsImages = require('../models/ProductsImages');
+const HitsProducts = require('../models/HitsProducts');
+
+const addOneView = async (connectionOption, id) => {
+  const hitProduct = await HitsProducts(connectionOption).findOne({ where: { id_product: id } });
+  let { number_of_hits } = hitProduct;
+  await hitProduct.update({ number_of_hits: ++number_of_hits });
+};
 
 // Classe responsável pelo serviços da Administradores
 class PublicControllers {
@@ -17,6 +24,10 @@ class PublicControllers {
       const products = await Products(connectionOption).findAll(
         productPublicFilters(connectionOption, req),
       );
+
+      if (req.query.id && products.length > 0) {
+        await addOneView(connectionOption, req.query.id);
+      }
 
       return Responses.success(res, products);
     } catch (error) {

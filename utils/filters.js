@@ -1,5 +1,6 @@
 // Models
 const Categories = require('../models/Categories');
+const HitsProducts = require('../models/HitsProducts');
 const Images = require('../models/Images');
 
 const productFilters = (connectionOption, req) => {
@@ -22,6 +23,11 @@ const productFilters = (connectionOption, req) => {
       {
         model: Images(connectionOption),
         as: 'img_main',
+      },
+      {
+        model: HitsProducts(connectionOption),
+        as: 'hits',
+        attributes: { exclude: ['id', 'id_product'] },
       },
     ],
     where: {},
@@ -106,6 +112,11 @@ const productPublicFilters = (connectionOption, req) => {
       {
         model: Images(connectionOption),
         as: 'img_main',
+      },
+      {
+        model: HitsProducts(connectionOption),
+        as: 'hits',
+        attributes: { exclude: ['id', 'id_product'] },
       },
     ],
     where: {},
