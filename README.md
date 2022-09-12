@@ -1,5 +1,5 @@
 <h1 align="center">
-  🥼<br>La Beca Store - API
+  🥼<br>LaBeca - API
 </h1>
 
 <h4 align="center">
