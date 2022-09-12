@@ -8,7 +8,7 @@
 
 
 
-<h4 align="center"><a href="https://api.labecafut.com.br/docs">Clique aqui para ir a documentação do backend..</a></h4>
+<h4 align="center"><a href="https://api.labecafut.com.br/docs">Clique aqui para ir a documentação do backend.</a></h4>
 
 ## 📖 Seções
 A API é compostas por rotas públicas e privadas, as públicas são para acesso dos "clientes", como a página inicial do site, categorias para o usuário escolher, e entre outras coisas. Já a privada é o acesso administrativo do site, onde poderá criar um produto, criar uma categoria, relacionar o produto com a categoria, enviar imagens, remover imagens, e entre outras coisas que normalmente precisam de um tipo de privilégio.
