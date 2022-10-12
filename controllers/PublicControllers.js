@@ -62,12 +62,12 @@ class PublicControllers {
     }
   }
 
-  async productsByCategoryId(req, res) {
+  async productsByCategorySlug(req, res) {
     try {
       const connectionOption = Database.getConnectionOptions();
 
       const category = await Categories(connectionOption).findOne({
-        where: { slug: req.params.slug },
+        where: { slug: req.params.slug, active: true },
       });
 
       if (!category) return Responses.badRequest(res, 'Categoria não encontrada');
