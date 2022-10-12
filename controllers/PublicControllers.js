@@ -8,6 +8,7 @@ const {
   productPublicFilters,
   categoriesFilters,
   productPublicMoreAcessFilters,
+  productBySlugFilters
 } = require('../utils/filters');
 const ProductsCategories = require('../models/ProductsCategories');
 const ProductsImages = require('../models/ProductsImages');
@@ -36,9 +37,9 @@ class PublicControllers {
         );
       }
 
-      if (req.query.id && products.length > 0) {
-        await addOneView(connectionOption, req.query.id);
-      }
+      // if (req.query.id && products.length > 0) {
+      //   await addOneView(connectionOption, req.query.id);
+      // }
 
       return Responses.success(res, products);
     } catch (error) {
@@ -66,58 +67,10 @@ class PublicControllers {
     try {
       const connectionOption = Database.getConnectionOptions();
 
-      const category = await Categories(connectionOption).findOne({
-        where: { slug: req.params.slug, active: true },
-      });
+      const products = await Products(connectionOption)
+        .findAll(productBySlugFilters(connectionOption, req))
 
-      if (!category) return Responses.badRequest(res, 'Categoria não encontrada');
-
-      const nameCategory = category.name;
-
-      const categories = await ProductsCategories(connectionOption).findAll({
-        where: {
-          categoryId: category.id,
-        },
-      });
-
-      const products = await Promise.all(
-        categories.map(async (category) => {
-          const product = await Products(connectionOption).findOne({
-            include: [
-              {
-                model: Categories(connectionOption),
-              },
-              {
-                model: Images(connectionOption),
-              },
-              {
-                model: Images(connectionOption),
-                as: 'img_main',
-              },
-            ],
-            where: { id: category.productId },
-          });
-
-          const productImages = await ProductsImages(connectionOption).findAll({
-            where: { productId: product.id },
-          });
-
-          const images = await Promise.all(
-            productImages.map(async (productImage) => {
-              const image = await Images(connectionOption).findOne({
-                where: { id: productImage.imageId },
-                attributes: { exclude: ['updatedAt', 'createdAt'] },
-              });
-
-              return { ...image.dataValues };
-            }),
-          );
-
-          return { ...product.dataValues, images, nameCategory };
-        }),
-      );
-
-      return Responses.success(res, products, category);
+      return Responses.success(res, products);
     } catch (error) {
       console.log(error);
       return Responses.internalServerError(res, error);
