@@ -70,7 +70,10 @@ class PublicControllers {
       const products = await Products(connectionOption)
         .findAll(productBySlugFilters(connectionOption, req))
 
-      return Responses.success(res, products);
+      const category = await Categories(connectionOption).findOne({ where: { slug: req.params.slug } })
+
+
+      return Responses.success(res, products, { statusCategory: { exists: !!category, name: category ? category.name : undefined } });
     } catch (error) {
       console.log(error);
       return Responses.internalServerError(res, error);
